@@ -6,7 +6,6 @@ var qbdoo = {
 	cards: 16,
 	cardsEls: [],
 	init: function() {
-	  this.events();
 	  this.setupGame();
   },
   setupGame: function() {
@@ -15,15 +14,17 @@ var qbdoo = {
       this.board.querySelectorAll("div[data-value]")[i-1].setAttribute("data-value", num);
     }
     this.cardEls = this.board.querySelectorAll("div[data-value]");
+	this.events();
   },
   events: function() {
-    for (var i=0; i<this.cardsEls.length; i++) {
-      this.cards[i].addEventListener("click", this.turnCard );
+    for (var i=0; i < this.cards; i++) {
+      this.cardEls[i].addEventListener("click", this.turnCard );
     }
   },
-  turnCard: function() {
+  turnCard: function(el) {
+	el.className = 'flipped';
     //turns the card by changing the className
-    console.log("I pooped");
+    console.log(el);
   },
   hideCard: function() {
     //removes card if poll returns true
