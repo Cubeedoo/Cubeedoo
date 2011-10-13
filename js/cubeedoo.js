@@ -2,15 +2,20 @@ var qbdoo = {
 	currentLevel: 1,
 	currentTheme: "numbers",
 	defaultGameDuration: 120,
+	board: document.querySelector("#main"),
+	cards: board.querySelectorAll("div"),
 	init: function() {
-	  console.log("init()");
+	  this.events();
   },
   events: function() {
     console.log("events()");
-    
+    for (var i=0; i<this.cards.length; i++) {
+      this.cards[i].addEventListener("click", this.turnCard );
+    }
   },
   turnCard: function() {
     //turns the card by changing the className
+    console.log("I pooped");
   },
   hideCard: function() {
     //removes card if poll returns true
@@ -24,6 +29,7 @@ var qbdoo = {
   timer: function() {
     //the timer function.
     //accepts (none | start | stop)
+    
   },
   pause: function() {
     // use dataset to get value for all the cards.
