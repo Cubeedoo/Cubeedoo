@@ -6,49 +6,92 @@
   <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-  <link rel="shortcut icon" href="/appleicon.png"/>
+  <link rel="shortcut icon" href="/icon.png"/>
   <link rel="apple-touch-icon" href="/appleicon.png"/> 
   <link rel="apple-touch-startup-image" href="startup.png" />
-  <link rel="stylesheet" href="css/style.css"/> 
+  <link rel="stylesheet" href="css/cubeedoo.css"/> 
 </head> 
 <body>
   <article>
+  <header>
+  	<hgroup>
+  	 <h1>CuBeeDoo</h1>
+     <h2>The Mobile Memory Matching Game</h2>
+    </hgroup>
+  </header>  
     <section id="main">
       <div id="game" class="colors"> 
               <div id="board" class="level1">
-              		<div data-face="0" data-cell="1"><i></i><b></b></div>
-              		<div data-face="0" data-cell="2"><i></i><b></b></div>
-              		<div data-face="0" data-cell="3"><i></i><b></b></div>
-              		<div data-face="0" data-cell="4"><i></i><b></b></div>
+              		<div data-face="0" data-cell="1"></div>
+              		<div data-face="0" data-cell="2"></div>
+              		<div data-face="0" data-cell="3"></div>
+              		<div data-face="0" data-cell="4"></div>
                     
-              		<div data-face="0" data-cell="5"><i></i><b></b></div>
-              		<div data-face="0" data-cell="6"><i></i><b></b></div>
-              		<div data-face="0" data-cell="7"><i></i><b></b></div>
-              		<div data-face="0" data-cell="8"><i></i><b></b></div>
+              		<div data-face="0" data-cell="5"></div>
+              		<div data-face="0" data-cell="6"></div>
+              		<div data-face="0" data-cell="7"></div>
+              		<div data-face="0" data-cell="8"></div>
                     
-              		<div data-face="0" data-cell="9"><i></i><b></b></div>
-              		<div data-face="0" data-cell="10"><i></i><b></b></div>
-              		<div data-face="0" data-cell="11"><i></i><b></b></div>
-              		<div data-face="0" data-cell="12"><i></i><b></b></div>
+              		<div data-face="0" data-cell="9"></div>
+              		<div data-face="0" data-cell="10"></div>
+              		<div data-face="0" data-cell="11"></div>
+              		<div data-face="0" data-cell="12"></div>
                     
-              		<div data-face="0" data-cell="13"><i></i><b></b></div>
-              		<div data-face="0" data-cell="14"><i></i><b></b></div>
-              		<div data-face="0" data-cell="15"><i></i><b></b></div>
-              		<div data-face="0" data-cell="16"><i></i><b></b></div>
+              		<div data-face="0" data-cell="13"></div>
+              		<div data-face="0" data-cell="14"></div>
+              		<div data-face="0" data-cell="15"></div>
+              		<div data-face="0" data-cell="16"></div>
                     
-              		<div data-face="0" data-cell="17"><i></i><b></b></div>
-              		<div data-face="0" data-cell="18"><i></i><b></b></div>
-              		<div data-face="0" data-cell="19"><i></i><b></b></div>
-              		<div data-face="0" data-cell="20"><i></i><b></b></div>
+              		<div data-face="0" data-cell="17"></div>
+              		<div data-face="0" data-cell="18"></div>
+              		<div data-face="0" data-cell="19"></div>
+              		<div data-face="0" data-cell="20"></div>
                     
-              		<div data-face="0" data-cell="21"><i></i><b></b></div>
-              		<div data-face="0" data-cell="22"><i></i><b></b></div>
-              		<div data-face="0" data-cell="23"><i></i><b></b></div>
-              		<div data-face="0" data-cell="24"><i></i><b></b></div>
+              		<div data-face="0" data-cell="21"></div>
+              		<div data-face="0" data-cell="22"></div>
+              		<div data-face="0" data-cell="23"></div>
+              		<div data-face="0" data-cell="24"></div>
                     
               </div> 
-</div></section></article>
- 
+     </div>
+     <footer>
+     	<div class="control scores">Scores</div> 
+            <div class="control pauseplay" id="pause">Pause</div>
+            <ul>
+               <li id="level">Level: <output></output></li>
+               <li id="timer">  
+                 <div id="seconds"></div>
+               </li> 
+               <li> <button id="mutebutton" value="Mute"></button></li>
+               <li id="score">Score: <output>0</output></li>
+            </ul>
+     </footer>
+   </section>
+   
+   
+   <footer>
+   <ul>
+   	  <li><a href="about/estelle.html">About Estelle</a></li>
+      <li><a href="about/david.html">About David</a></li>
+      <li><a href="about/max.html">About Max</a></li>
+   </ul>
+      <p>Theme: <select onChange="document.getElementById('game').setAttribute('class',this.value);">
+      	<option value="colors">Colors</option>
+      	<option value="shapes">Shapes</option>
+      	<option value="numbers">Numbers</option>
+        </select></p>
+        <p>Level: <select onChange="document.getElementById('board').setAttribute('class',this.value);">
+      	<option value="level1">1</option>
+      	<option value="level2">2</option>
+      	<option value="level3">3</option>
+        </select></p>
+    </footer>
+  </article>
+            
+<audio id="match" preload src="media/match.mp3"></audio>
+<audio id="fail" preload src="media/fail.mp3"></audio>
+<audio id="gameover" preload src="media/gameover.mp3"></audio>
+<script src="js/cubeedoo.js"></script> 
 </body>
 </html>
 
