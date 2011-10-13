@@ -6,15 +6,15 @@ var qbdoo = {
 	cards: 16,
 	cardsEls: [],
 	init: function() {
-	  this.events();
 	  this.setupGame();
   },
   setupGame: function() {
     for (var i=1; i<=this.cards;i++) {
-      num = Math.floor(Math.random()*this.cards);
+      num = Math.floor(Math.random()*this.cards+1);
       this.board.querySelectorAll("div[data-value]")[i-1].setAttribute("data-value", num);
     }
     this.cardEls = this.board.querySelectorAll("div[data-value]");
+    this.events();
   },
   events: function() {
     for (var i=0; i<this.cardsEls.length; i++) {
