@@ -4,23 +4,22 @@ var qbdoo = {
 	defaultGameDuration: 120,
 	board: document.querySelector("#board"),
 	cards: 16,
-	//cardsEls: this.board.querySelectorAll("div[data-value]:not([data-value=0])"),
+	cardsEls: [],
 	init: function() {
-	  console.log(this.cards.length);
 	  this.events();
 	  this.setupGame();
   },
   setupGame: function() {
     for (var i=1; i<=this.cards;i++) {
-      this.board.querySelectorAll("div[data-value]")[i-1].setAttribute("data-value", 1);
-      console.log(this.board.querySelectorAll("div[data-value]")[i-1]);
+      num = Math.floor(Math.random()*this.cards);
+      this.board.querySelectorAll("div[data-value]")[i-1].setAttribute("data-value", num);
     }
+    this.cardEls = this.board.querySelectorAll("div[data-value]");
   },
   events: function() {
-    console.log("events()");
-    //for (var i=0; i<this.cardsEls.length; i++) {
-    //  this.cards[i].addEventListener("click", this.turnCard );
-    //}
+    for (var i=0; i<this.cardsEls.length; i++) {
+      this.cards[i].addEventListener("click", this.turnCard );
+    }
   },
   turnCard: function() {
     //turns the card by changing the className
