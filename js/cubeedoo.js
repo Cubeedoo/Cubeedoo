@@ -5,20 +5,23 @@ var qbdoo = {
 	board: document.querySelector("#board"),
 	cards: 16,
 	cardsEls: [],
+	onceValue: [],
+	twiceValue: [],
 	init: function() {
-	  this.setupGame();
+	  qbdoo.setupGame();
   },
   setupGame: function() {
-    for (var i=1; i<=this.cards;i++) {
-      num = Math.floor(Math.random()*this.cards+1);
-      this.board.querySelectorAll("div[data-value]")[i-1].setAttribute("data-value", num);
+    // populate all the active blocks with data valuess
+    for (var i=1; i<=qbdoo.cards;i++) {
+      num = qbdoo.randomize();
+      qbdoo.board.querySelectorAll("div[data-value]")[i-1].setAttribute("data-value", num);
     }
-    this.cardEls = this.board.querySelectorAll("div[data-value]");
-    this.events();
+    qbdoo.cardEls = qbdoo.board.querySelectorAll("div[data-value]");
+    qbdoo.events();
   },
   events: function() {
-    for (var i=0; i<this.cardsEls.length; i++) {
-      this.cards[i].addEventListener("click", this.turnCard );
+    for (var i=0; i<qbdoo.cardsEls.length; i++) {
+      qbdoo.cards[i].addEventListener("click", qbdoo.turnCard );
     }
   },
   turnCard: function() {
@@ -37,7 +40,24 @@ var qbdoo = {
   timer: function() {
     //the timer function.
     //accepts (none | start | stop)
-    
+  },
+  randomize: function() {
+    var num = Math.floor(Math.random() * (qbdoo.cards / 2) + 1);
+    if (qbdoo.inArray(num, qbdoo.onceValue) === false) {
+      qbdoo.onceValue.push(num);
+      console.log(num);
+      return num;
+    } else if (qbdoo.inArray(num, qbdoo.twiceValue) === false) {
+      qbdoo.twiceValue.push(num);
+      console.log(num + ": second time!");
+      return num;
+    } else if (qbdoo.inArray(num, qbdoo.twiceValue)) {
+      qbdoo.randomize();
+      console.log("randomizer");
+    } else {
+      console.log("zero");
+      return 0;
+    }
   },
   pause: function() {
     // use dataset to get value for all the cards.
@@ -77,8 +97,26 @@ var qbdoo = {
   changeTheme: function(klass) {
 	//change the theme by changing the class
     document.getElementById('game').setAttribute('class',klass);
-  }
-  
+  },
+  inArray: function(needle, haystack, argStrict) {
+    var key = '',
+    strict = !! argStrict;
+    
+    if (strict) {
+      for (key in haystack) {
+        if (haystack[key] === needle) {
+          return true;
+        }
+      }
+    } else {
+      for (key in haystack) {
+        if (haystack[key] == needle) {
+          return true;
+        }
+      }
+    }
+    return false;
+  },
 };
 
 //Initialize the js

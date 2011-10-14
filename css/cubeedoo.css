@@ -101,6 +101,7 @@ article > footer p {
 
 div[data-value]:before,
 div[data-value]:after {
+  content: "";
 	position: absolute;
 	height: 100%;
 	width: 100%;
