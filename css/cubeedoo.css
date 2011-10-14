@@ -99,8 +99,14 @@ article > footer p {
 	margin: 8px 15px;
 }
 
+<<<<<<< HEAD
 div[data-value]:after,
 div[data-value]:before {
+=======
+div[data-value]:before,
+div[data-value]:after {
+  content: "";
+>>>>>>> d9b65148a2f2431bd9737cf579f1c2fdc81f2c78
 	position: absolute;
 	height: 100%;
 	width: 100%;
