@@ -1,3 +1,5 @@
+/* CuBeDoo */
+
 var qbdoo = {
 	currentLevel: 1,
 	currentTheme: "numbers",

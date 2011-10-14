@@ -236,7 +236,7 @@ div[data-value]:after {
 
 
 .level3 div[data-value="0"] {display: block;}
-.flipped:after { display: none !important;} /* adding comment */
+.flipped:after { display: none !important;} /* adding another comment */
 div[data-value="0"]:after{display: none;}
 
 .level1 div:nth-of-type(17+n) *,
