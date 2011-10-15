@@ -254,28 +254,48 @@ section footer{
 .scores,
 .menu,
 section footer {
-	background-image:-webkit-gradient(linear,0% 0%,0% 100%,
-		from(rgba(255,255,255,0.4)),
-		to(rgba(255,255,255,0))); 
-	background-image:-webkit-linear-gradient(
-		rgba(255,255,255,0),
-		rgba(255,255,255,0.3));
+	background-image:
+		-webkit-gradient(linear,0% 0%,0% 100%,
+			from(rgba(255,255,255,0.3)),
+			to(rgba(255,255,255,0))); 
+	background-image:
+		-webkit-linear-gradient(
+			rgba(255,255,255,0),
+			rgba(255,255,255,0.3));
 	background-image:
 		-moz-linear-gradient(
-		rgba(255,255,255,0),
-		rgba(255,255,255,0.3));
+			rgba(255,255,255,0),
+			rgba(255,255,255,0.3));
+	background-image:
+		-ms-linear-gradient(
+			rgba(255,255,255,0),
+			rgba(255,255,255,0.3));
+	background-image:
+		-o-linear-gradient(
+			rgba(255,255,255,0),
+			rgba(255,255,255,0.3));
 	}
 section footer {
-	background-image:-webkit-gradient(linear,0% 100%,0% 0%,
-		from(rgba(255,255,255,0.4)),
-		to(rgba(255,255,255,0.1))); 
-	background-image:-webkit-linear-gradient(bottom,
-		rgba(255,255,255,0.1),
-		rgba(255,255,255,0.4));
+	background-image:
+		-webkit-gradient(linear,0% 100%,0% 0%,
+			from(rgba(255,255,255,0.4)),
+			to(rgba(255,255,255,0.1))); 
+	background-image:	
+		-webkit-linear-gradient(bottom,
+			rgba(255,255,255,0.1),
+			rgba(255,255,255,0.4));
 	background-image:
 		-moz-linear-gradient(bottom,
-		rgba(255,255,255,0.1),
-		rgba(255,255,255,0.4));
+			rgba(255,255,255,0.1),
+			rgba(255,255,255,0.4));
+	background-image:	
+		-ms-linear-gradient(bottom,
+			rgba(255,255,255,0.1),
+			rgba(255,255,255,0.4));
+	background-image:
+		-o-linear-gradient(bottom,
+			rgba(255,255,255,0.1),
+			rgba(255,255,255,0.4));
 	}
 .scores, 
 .menu{
