@@ -35,9 +35,7 @@ var qbdoo = {
   
   events: function() {
 	qbdoo.cardEls = qbdoo.board.querySelectorAll("#board div:not([data-value='0'])");
-	console.dir(qbdoo.cardEls);
 	var cards = qbdoo.cardEls.length;
-	console.log(cards);
     for (var i = 0; i < cards; i++) {
       qbdoo.cardEls[i].addEventListener("click", qbdoo.turnCard );
     }
