@@ -3,12 +3,10 @@
 var qbdoo = {
 	currentLevel: 1,
 	currentTheme: "numbers",
-	defaultGameDuration: 120,
+	gameDuration: 120,
 	board: document.querySelector("#board"),
 	cards: 16,
-	cardsEls: [],
-	onceValue: [],
-	twiceValue: [],
+	cardEls: [],
 	cardarray: [],
 	cardarray2: [],
 	init: function() {
@@ -16,7 +14,6 @@ var qbdoo = {
   	},
 	
   setupGame: function() {
-	
 	// make sure global arrays are empty
 	qbdoo.cardarray = [];
 	qbdoo.cardarray2 = [];
@@ -43,9 +40,33 @@ var qbdoo = {
   
   turnCard: function() {
     //turns the card by changing the className
-    console.log("I pooped");
+    this.classList.add('flipped');
+	qbdoo.flipped = document.querySelectorAll('div.flipped');
+	console.log("count: " + qbdoo.flipped.length);
+	if(qbdoo.flipped.length == 2) {
+		if(qbdoo.matched()){
+			setTimeout(function(){
+				qbdoo.flipped[0].dataset['value'] = 0;
+				qbdoo.flipped[1].dataset['value'] = 0;
+			}, 500);
+		} 
+		setTimeout(function(){
+			qbdoo.flipped[0].classList.remove('flipped');
+			qbdoo.flipped[1].classList.remove('flipped');
+		}, 500);
+		
+	}
   },
-  
+  matched: function(){
+	console.log(qbdoo.getValue(qbdoo.flipped[0]) + " data value");
+	if(qbdoo.getValue(qbdoo.flipped[0]) == qbdoo.getValue(qbdoo.flipped[1])){
+		console.log('match');
+		return true;
+	} else {
+		console.log('no match');
+		return false;	
+	}
+  },
   hideCard: function() {
     //removes card if poll returns true
   },
@@ -54,8 +75,9 @@ var qbdoo = {
     // checks the value of the cards and returns boolean
   },
   
-  getValue: function() {
+  getValue: function(mycard) {
     //get the data-value of the card
+	return mycard.dataset['value'];
   },
   
   timer: function() {

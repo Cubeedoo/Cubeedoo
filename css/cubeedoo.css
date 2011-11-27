@@ -220,7 +220,12 @@ div[data-value]:after {
 .animals .level1 div[data-value="11"]:before { background-position:0;}
 .animals .level1 div[data-value="12"]:before { background-position:-50px;}
 
-
+#board div[data-value="0"],
+#board div[data-value="0"]:after,
+#board div[data-value="0"]:before
+ { visibility: hidden;
+ background: transparent;
+}
 
 
 
