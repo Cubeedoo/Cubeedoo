@@ -6,6 +6,8 @@ var qbdoo = {
 	gameDuration: 120,
 	board: document.querySelector("#board"),
 	cards: 16,
+	//pauses new flips while existant flips are handled
+	pauseFlipping: false,
 	cardEls: [],
 	cardarray: [],
 	cardarray2: [],
@@ -25,7 +27,7 @@ var qbdoo = {
 	  	num = qbdoo.randomize(); 
 	 	}
 	  // set the data-value for each card
-      qbdoo.board.querySelectorAll("div[data-value]")[i-1].setAttribute("data-value", num);
+      qbdoo.board.querySelector("div[data-position='" + i + "']").setAttribute("data-value", num);
     }
     qbdoo.events();
   },
@@ -39,36 +41,50 @@ var qbdoo = {
   },
   
   turnCard: function() {
+	if(qbdoo.pauseFlipping) return false;
     //turns the card by changing the className
     this.classList.add('flipped');
 	qbdoo.flipped = document.querySelectorAll('div.flipped');
-	console.log("count: " + qbdoo.flipped.length);
 	if(qbdoo.flipped.length == 2) {
-		if(qbdoo.matched()){
-			setTimeout(function(){
-				qbdoo.flipped[0].dataset['value'] = 0;
-				qbdoo.flipped[1].dataset['value'] = 0;
-			}, 500);
-		} 
-		setTimeout(function(){
-			qbdoo.flipped[0].classList.remove('flipped');
-			qbdoo.flipped[1].classList.remove('flipped');
-		}, 500);
-		
+		qbdoo.pauseFlipping = true;
+		setTimeout(function(){qbdoo.handleMatching()}, 500);
 	}
   },
+  handleMatching: function(){
+	  if(qbdoo.matched()){
+		  		qbdoo.hideCards();
+		} 
+		//remove class whether or not matched
+		qbdoo.flipped[0].classList.remove('flipped');
+		qbdoo.flipped[1].classList.remove('flipped');
+		// once done, allow game to continue
+		qbdoo.pauseFlipping = false;
+		//check end of game
+		qbdoo.isGameOver();
+		
+		
+  },
   matched: function(){
-	console.log(qbdoo.getValue(qbdoo.flipped[0]) + " data value");
 	if(qbdoo.getValue(qbdoo.flipped[0]) == qbdoo.getValue(qbdoo.flipped[1])){
-		console.log('match');
 		return true;
 	} else {
 		console.log('no match');
 		return false;	
 	}
   },
-  hideCard: function() {
+  hideCards: function() {
     //removes card if poll returns true
+		qbdoo.flipped[0].dataset['value'] = 0;
+		qbdoo.flipped[1].dataset['value'] = 0;
+  },
+  
+  isGameOver: function() {
+	if(qbdoo.board.querySelectorAll("#board div:not([data-value='0'])").length > 0) {
+		return false;
+	}
+	console.log('game over');
+	//endTheGame();
+	
   },
   
   poll: function() {
@@ -92,15 +108,12 @@ var qbdoo = {
 	// make sure that random number isn't already used twice
 		if(!(in_array( num, qbdoo.cardarray))){
 			qbdoo.cardarray.push(num);
-			console.dir(qbdoo.cardarray);
 			return num;	
 		} else if(!(in_array( num, qbdoo.cardarray2))){
 			qbdoo.cardarray2.push(num);
-			console.log('second array:');
-			console.dir(qbdoo.cardarray2);
 			return num;	
 		} else {
-			return num = '';	
+			return '';	
 		}
 		
 		// checks if number already in array
