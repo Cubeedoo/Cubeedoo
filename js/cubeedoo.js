@@ -16,31 +16,30 @@ var qbdoo = {
   	},
 	
   setupGame: function() {
-    // populate all the active blocks with data valuess
 	
-	console.dir(qbdoo.cardarray);
-	console.dir(qbdoo.cardarray2);
+	// make sure global arrays are empty
+	qbdoo.cardarray = [];
+	qbdoo.cardarray2 = [];
+    // populate all the active blocks with data valuess
     for (var i=1; i<=qbdoo.cards; i++) {
+	  // get pairs of randome numbers
 	  var num = "";
 	  while(!num) { 
 	  	num = qbdoo.randomize(); 
-		console.log('iteration');
 	 	}
+	  // set the data-value for each card
       qbdoo.board.querySelectorAll("div[data-value]")[i-1].setAttribute("data-value", num);
     }
-    qbdoo.cardEls = qbdoo.board.querySelectorAll("div[data-value]");
     qbdoo.events();
-	// clear array
-	qbdoo.cardarray = [];
-	qbdoo.cardarray2 = [];
-	console.log('end of setup'); 
-	console.dir(qbdoo.cardarray);
-	console.dir(qbdoo.cardarray2);
   },
   
   events: function() {
-    for (var i=0; i<qbdoo.cardsEls.length; i++) {
-      qbdoo.cards[i].addEventListener("click", qbdoo.turnCard );
+	qbdoo.cardEls = qbdoo.board.querySelectorAll("#board div:not([data-value='0'])");
+	console.dir(qbdoo.cardEls);
+	var cards = qbdoo.cardEls.length;
+	console.log(cards);
+    for (var i = 0; i < cards; i++) {
+      qbdoo.cardEls[i].addEventListener("click", qbdoo.turnCard );
     }
   },
   
@@ -67,7 +66,10 @@ var qbdoo = {
   },
   
   randomize: function() {
+	// get a random number 
     var num = Math.floor(Math.random() * (qbdoo.cards / 2) + 1);
+	
+	// make sure that random number isn't already used twice
 		if(!(in_array( num, qbdoo.cardarray))){
 			qbdoo.cardarray.push(num);
 			console.dir(qbdoo.cardarray);
@@ -81,6 +83,7 @@ var qbdoo = {
 			return num = '';	
 		}
 		
+		// checks if number already in array
 		function in_array( num, currArray ){
 			var inarray=false,
 				arrayLength = currArray.length,
@@ -94,23 +97,7 @@ var qbdoo = {
 			return inarray;
 		}
 
-  }
-    /*if (qbdoo.inArray(num, qbdoo.onceValue) === false) {
-      qbdoo.onceValue.push(num);
-      console.log(num);
-      return num;
-    } else if (qbdoo.inArray(num, qbdoo.twiceValue) === false) {
-      qbdoo.twiceValue.push(num);
-      console.log(num + ": second time!");
-      return num;
-    } else if (qbdoo.inArray(num, qbdoo.twiceValue)) {
-      qbdoo.randomize();
-      console.log("randomizer");
-    } else {
-      console.log("zero");
-      return 0;
-    }
-  }*/,
+  },
   
   pause: function() {
     // use dataset to get value for all the cards.
