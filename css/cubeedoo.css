@@ -345,3 +345,10 @@ audio {visibility: hidden;}
 	}
 #mutebutton:hover {opacity: 0.7;}
 
+@media only screen and (max-width : 500px) {
+/*@media screen and (max-device-width: 320px) {*/
+  article > header, article > footer {display:none;}
+  section, body, #game {margin:0;}
+  
+}
+
