@@ -5,7 +5,9 @@ var qbdoo = {
 	currentTheme: "numbers",
 	gameDuration: 120,
 	score: 0,
+	game: document.querySelector("article"),
 	board: document.querySelector("#board"),
+	footer: document.querySelector("article footer"),
 	cards: 16,
 	iterations: 0,
 	iterationsPerLevel: 5,
@@ -41,7 +43,9 @@ var qbdoo = {
       qbdoo.board.querySelector("div[data-position='" + i + "']").setAttribute("data-value", num);
     }
 	qbdoo.timerPause = true;
+	qbdoo.pauseOrPlayBoard('pause');
     qbdoo.events();
+	//qbdoo.footer.querySelector('#pause').addEventListener("click", function(){qbdoo.pause();});
 	qbdoo.setTimer();
 	qbdoo.iterations++;
   },
@@ -68,7 +72,10 @@ var qbdoo = {
   
   turnCard: function() {
 	// timer starts on first flip
-	if(qbdoo.timerPause) qbdoo.timerPause = false;
+	if(qbdoo.timerPause){
+		 qbdoo.timerPause = false;
+		 qbdoo.pauseOrPlayBoard('play');
+	}
 	
 	//can flip cards at this time
 	if(qbdoo.pauseFlipping) return false;
@@ -131,6 +138,7 @@ var qbdoo = {
   endLevel: function() {
     // Stop the timer
 	qbdoo.timerPause = true;
+	qbdoo.pauseOrPlayBoard('pause');
 	
 	// Add to score
 	document.querySelector("#score output").innerHTML = qbdoo.score += qbdoo.timeLeft;
@@ -146,13 +154,11 @@ var qbdoo = {
 				qbdoo.setupGame();
 			}, 4000);
 	} else {
-		// Announce End of Game
+		// Announce End of Game: update score, show game over and remove timer
 		qbdoo.gameover.getElementsByTagName('output')[0].innerHTML = qbdoo.score;
 		qbdoo.gameover.style.display = 'block';
 		qbdoo.timerShell.innerHTML = '';
-		
 	}
-	
   },
   
   
@@ -162,6 +168,14 @@ var qbdoo = {
 	return mycard.dataset['value'];
   },
   
+  pauseOrPlayBoard: function(state) {
+    //class controls animation of timer
+	if(state == "pause") {
+		qbdoo.game.classList.add('paused');	
+	} else if(state == "play"){
+		qbdoo.game.classList.remove('paused');	
+	}
+  },
   
   setTimer: function() {
 	  qbdoo.timerShell = document.querySelector("#timer output");
@@ -180,6 +194,7 @@ var qbdoo = {
 		}
 		if(!qbdoo.timeLeft){
 			qbdoo.timerPause = true;
+			qbdoo.pauseOrPlayBoard('pause');
 			qbdoo.clearAll();
 			qbdoo.endLevel();	
 		}
@@ -219,7 +234,8 @@ var qbdoo = {
   
   pause: function() {
     // use dataset to get value for all the cards.
-
+	console.log('paused selected');
+	qbdoo.pauseOrPlayBoard('pause');
 	// add theme to value set
 
 	// add level to value set
@@ -267,28 +283,7 @@ var qbdoo = {
   changeTheme: function(klass) {
 	//change the theme by changing the class
     document.getElementById('game').setAttribute('class',klass);
-  },
-  
-  
-  inArray: function(needle, haystack, argStrict) {
-    var key = '',
-    strict = !! argStrict;
-    
-    if (strict) {
-      for (key in haystack) {
-        if (haystack[key] === needle) {
-          return true;
-        }
-      }
-    } else {
-      for (key in haystack) {
-        if (haystack[key] == needle) {
-          return true;
-        }
-      }
-    }
-    return false;
-  },
+  }
 };
 
 //Initialize the js

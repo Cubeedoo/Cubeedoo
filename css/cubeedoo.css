@@ -315,6 +315,21 @@ section footer {
 			rgba(255,255,255,0.1),
 			rgba(255,255,255,0.4));
 	}
+#timer {
+	position: absolute;
+	bottom: 40px;
+	width: 100%;
+	text-align: center;
+	color: #fff;
+	-webkit-animation: flashing 1s infinite;
+}
+.paused #timer {-webkit-animation-play-state:paused;}
+
+@-webkit-keyframes flashing {
+	0% {text-shadow: 0 0 5px rgba(255,255,255,0.5); -webkit-transform: translate3d(0,1px,0);}
+	100% {text-shadow: 0 0 5px rgba(255,255,255,0); -webkit-transform: translate3d(0,0,0);}	
+}
+
 .scores, 
 .menu{
 	float:left;
@@ -357,6 +372,8 @@ audio {visibility: hidden;}
 	background-size: 20px 20px;
 	background-color: transparent;
 	border: none; 
+	text-indent: 25px;
+	overflow: hidden; 
 	-webkit-transform: rotate(45deg);}
 #mutebutton.Unmute {
 	background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='200'><circle cx='55' cy='190' r='25' fill='#000' /><path d='M160 213h-34a82 82 0 0 0 -82 -82v-34a116 116 0 0 1 116 116z' fill='#fff'/><path d='M184 213A140 140 0 0 0 44 73 V 38a175 175 0 0 1 175 175z' fill='#fff'/></svg>"); 
