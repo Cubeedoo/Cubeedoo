@@ -7,8 +7,11 @@ var qbdoo = {
 	score: 0,
 	board: document.querySelector("#board"),
 	cards: 16,
+	iterations: 0,
+	iterationsPerLevel: 1,
 	pauseFlipping: false, // after 2nd card, so time to see card
 	timerPause: true, //before start of game
+	interval: false, //before start of game
 	gameover: document.getElementById('gameover'),
 	levelover: document.getElementById('levelover'),
 	cardEls: [],
@@ -20,6 +23,9 @@ var qbdoo = {
 	
   setupGame: function() {
 	// make sure global arrays are empty
+	if(qbdoo.iterations && (qbdoo.iterations % qbdoo.iterationsPerLevel == 0)){
+		qbdoo.levelUp();	
+	}
 	qbdoo.gameover.style.display = 'none';
 	qbdoo.levelover.style.display = 'none';
 	qbdoo.cardarray = [];
@@ -37,6 +43,7 @@ var qbdoo = {
 	qbdoo.timerPause = true;
     qbdoo.events();
 	qbdoo.setTimer();
+	qbdoo.iterations++;
   },
   
   events: function() {
@@ -45,6 +52,18 @@ var qbdoo = {
     for (var i = 0; i < cards; i++) {
       qbdoo.cardEls[i].addEventListener("click", qbdoo.turnCard );
     }
+  },
+  
+  levelUp: function(){
+	  qbdoo.currentLevel++
+	  if(qbdoo.currentLevel < 4) {
+			document.getElementById('board').className = 'level' + qbdoo.currentLevel;
+		}
+	  document.querySelector('#level output').innerHTML = qbdoo.currentLevel;
+	  if (qbdoo.currentLevel == 2 || qbdoo.currentLevel == 3) qbdoo.cards += 4;
+	  if (qbdoo.currentLevel > 3) {
+		  qbdoo.gameDuration -= 5;
+	  }
   },
   
   turnCard: function() {
@@ -145,8 +164,9 @@ var qbdoo = {
   
   timer: function() {
     //the timer function.
-	setInterval(function(){ dropASecond();}, 1000);
-	
+	if(!qbdoo.interval){
+		qbdoo.interval = setInterval(function(){ dropASecond();}, 1000);
+	}
 	function dropASecond(){
 		if (!qbdoo.timerPause) {
 			qbdoo.timerShell.innerHTML = --qbdoo.timeLeft;
