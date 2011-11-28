@@ -74,8 +74,8 @@ var qbdoo = {
 		qbdoo.pauseFlipping = false;
 		
 		//check end of game
-		if(qbdoo.isGameOver()){
-			qbdoo.endGame();
+		if(qbdoo.isLevelOver()){
+			qbdoo.endLevel();
 		}	
   },
   
@@ -95,7 +95,7 @@ var qbdoo = {
 		qbdoo.flipped[1].dataset['value'] = 0;
   },
   
-  isGameOver: function() {
+  isLevelOver: function() {
 	if(qbdoo.board.querySelectorAll("#board div:not([data-value='0'])").length > 0) {
 		return false;
 	}
@@ -103,30 +103,30 @@ var qbdoo = {
 	return true;
   },
   
-  endGame: function() {
+  endLevel: function() {
     // Stop the timer
 	qbdoo.timerPause = true;
 	
 	// Add to score
 	document.querySelector("#score output").innerHTML = qbdoo.score += qbdoo.timeLeft;
 	
+	if(qbdoo.timeLeft){
+		// Announce End of Level
+		qbdoo.levelover.getElementsByTagName('output')[0].innerHTML = qbdoo.score;
+		qbdoo.levelover.style.display = 'block';
+		
+		// restart a new game
+		// leaving the score up for a few seconds
+		setTimeout(function(){
+				qbdoo.setupGame();
+			}, 4000);
+	} else {
+		// Announce End of Game
+		qbdoo.gameover.getElementsByTagName('output')[0].innerHTML = qbdoo.score;
+		qbdoo.gameover.style.display = 'block';
+		
+	}
 	
-	// Announce End of Game
-	qbdoo.levelover.getElementsByTagName('output')[0].innerHTML = qbdoo.score;
-	qbdoo.levelover.style.display = 'block';
-	
-	
-	// restart a new game
-	setTimeout(function(){
-			qbdoo.setupGame();
-		}, 4000);
-	
-  },
-  
-  
-  
-  poll: function() {
-    // checks the value of the cards and returns boolean
   },
   
   
@@ -151,8 +151,12 @@ var qbdoo = {
 		if (!qbdoo.timerPause) {
 			qbdoo.timerShell.innerHTML = --qbdoo.timeLeft;
 		}
+		if(!qbdoo.timeLeft){
+			qbdoo.timerPause = true;
+			qbdoo.clearAll();
+			qbdoo.endLevel();	
+		}
 	}
-    //accepts (none | start | stop)
   },
   
   randomize: function() {
@@ -226,6 +230,12 @@ var qbdoo = {
     
   },
   
+  clearAll: function() {
+	  // sets all values to 0
+	  for (var i=1; i<=qbdoo.cards; i++) {
+      		qbdoo.board.querySelector("div[data-position='" + i + "']").setAttribute("data-value", 0);
+		}
+  },
   
   changeTheme: function(klass) {
 	//change the theme by changing the class
