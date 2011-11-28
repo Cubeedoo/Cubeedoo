@@ -4,10 +4,13 @@ var qbdoo = {
 	currentLevel: 1,
 	currentTheme: "numbers",
 	gameDuration: 120,
+	score: 0,
 	board: document.querySelector("#board"),
 	cards: 16,
-	//pauses new flips while existant flips are handled
-	pauseFlipping: false,
+	pauseFlipping: false, // after 2nd card, so time to see card
+	timerPause: true, //before start of game
+	gameover: document.getElementById('gameover'),
+	levelover: document.getElementById('levelover'),
 	cardEls: [],
 	cardarray: [],
 	cardarray2: [],
@@ -17,6 +20,8 @@ var qbdoo = {
 	
   setupGame: function() {
 	// make sure global arrays are empty
+	qbdoo.gameover.style.display = 'none';
+	qbdoo.levelover.style.display = 'none';
 	qbdoo.cardarray = [];
 	qbdoo.cardarray2 = [];
     // populate all the active blocks with data valuess
@@ -29,7 +34,9 @@ var qbdoo = {
 	  // set the data-value for each card
       qbdoo.board.querySelector("div[data-position='" + i + "']").setAttribute("data-value", num);
     }
+	qbdoo.timerPause = true;
     qbdoo.events();
+	qbdoo.setTimer();
   },
   
   events: function() {
@@ -41,8 +48,13 @@ var qbdoo = {
   },
   
   turnCard: function() {
+	// timer starts on first flip
+	if(qbdoo.timerPause) qbdoo.timerPause = false;
+	
+	//can flip cards at this time
 	if(qbdoo.pauseFlipping) return false;
-    //turns the card by changing the className
+    
+	//turns the card by changing the className
     this.classList.add('flipped');
 	qbdoo.flipped = document.querySelectorAll('div.flipped');
 	if(qbdoo.flipped.length == 2) {
@@ -51,19 +63,22 @@ var qbdoo = {
 	}
   },
   handleMatching: function(){
-	  if(qbdoo.matched()){
-		  		qbdoo.hideCards();
-		} 
-		//remove class whether or not matched
+	if(qbdoo.matched()){
+		qbdoo.hideCards();
+	} 
+	//remove class whether or not matched
 		qbdoo.flipped[0].classList.remove('flipped');
 		qbdoo.flipped[1].classList.remove('flipped');
+		
 		// once done, allow game to continue
 		qbdoo.pauseFlipping = false;
+		
 		//check end of game
-		qbdoo.isGameOver();
-		
-		
+		if(qbdoo.isGameOver()){
+			qbdoo.endGame();
+		}	
   },
+  
   matched: function(){
 	if(qbdoo.getValue(qbdoo.flipped[0]) == qbdoo.getValue(qbdoo.flipped[1])){
 		return true;
@@ -72,6 +87,8 @@ var qbdoo = {
 		return false;	
 	}
   },
+  
+  
   hideCards: function() {
     //removes card if poll returns true
 		qbdoo.flipped[0].dataset['value'] = 0;
@@ -83,21 +100,58 @@ var qbdoo = {
 		return false;
 	}
 	console.log('game over');
-	//endTheGame();
+	return true;
+  },
+  
+  endGame: function() {
+    // Stop the timer
+	qbdoo.timerPause = true;
+	
+	// Add to score
+	document.querySelector("#score output").innerHTML = qbdoo.score += qbdoo.timeLeft;
+	
+	
+	// Announce End of Game
+	qbdoo.levelover.getElementsByTagName('output')[0].innerHTML = qbdoo.score;
+	qbdoo.levelover.style.display = 'block';
+	
+	
+	// restart a new game
+	setTimeout(function(){
+			qbdoo.setupGame();
+		}, 4000);
 	
   },
+  
+  
   
   poll: function() {
     // checks the value of the cards and returns boolean
   },
+  
+  
   
   getValue: function(mycard) {
     //get the data-value of the card
 	return mycard.dataset['value'];
   },
   
+  
+  setTimer: function() {
+	  qbdoo.timerShell = document.querySelector("#timer output");
+	  qbdoo.timerShell.innerHTML = qbdoo.timeLeft = qbdoo.gameDuration;
+	  qbdoo.timer();
+  },
+  
   timer: function() {
     //the timer function.
+	setInterval(function(){ dropASecond();}, 1000);
+	
+	function dropASecond(){
+		if (!qbdoo.timerPause) {
+			qbdoo.timerShell.innerHTML = --qbdoo.timeLeft;
+		}
+	}
     //accepts (none | start | stop)
   },
   
