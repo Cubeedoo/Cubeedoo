@@ -8,7 +8,7 @@ var qbdoo = {
 	board: document.querySelector("#board"),
 	cards: 16,
 	iterations: 0,
-	iterationsPerLevel: 1,
+	iterationsPerLevel: 5,
 	pauseFlipping: false, // after 2nd card, so time to see card
 	timerPause: true, //before start of game
 	interval: false, //before start of game
@@ -81,8 +81,12 @@ var qbdoo = {
 		setTimeout(function(){qbdoo.handleMatching()}, 500);
 	}
   },
+  
+  
   handleMatching: function(){
+	// do cards match each other?
 	if(qbdoo.matched()){
+		//then hide them
 		qbdoo.hideCards();
 	} 
 	//remove class whether or not matched
@@ -92,36 +96,38 @@ var qbdoo = {
 		// once done, allow game to continue
 		qbdoo.pauseFlipping = false;
 		
-		//check end of game
+		//check end of level
 		if(qbdoo.isLevelOver()){
 			qbdoo.endLevel();
 		}	
   },
   
+  // check if 2 cards match
   matched: function(){
 	if(qbdoo.getValue(qbdoo.flipped[0]) == qbdoo.getValue(qbdoo.flipped[1])){
 		return true;
 	} else {
-		console.log('no match');
 		return false;	
 	}
   },
   
-  
+  // nullify cards upon match
   hideCards: function() {
-    //removes card if poll returns true
 		qbdoo.flipped[0].dataset['value'] = 0;
 		qbdoo.flipped[1].dataset['value'] = 0;
   },
   
+  // check level status 
   isLevelOver: function() {
+	// not over if any card has data value
 	if(qbdoo.board.querySelectorAll("#board div:not([data-value='0'])").length > 0) {
 		return false;
 	}
-	console.log('game over');
+	// if no data-values, game is over
 	return true;
   },
   
+  // when level ends or game is over
   endLevel: function() {
     // Stop the timer
 	qbdoo.timerPause = true;
@@ -143,6 +149,7 @@ var qbdoo = {
 		// Announce End of Game
 		qbdoo.gameover.getElementsByTagName('output')[0].innerHTML = qbdoo.score;
 		qbdoo.gameover.style.display = 'block';
+		qbdoo.timerShell.innerHTML = '';
 		
 	}
 	
