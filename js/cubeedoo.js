@@ -45,7 +45,6 @@ var qbdoo = {
 	qbdoo.timerPause = true;
 	qbdoo.pauseOrPlayBoard('pause');
     qbdoo.events();
-	//qbdoo.footer.querySelector('#pause').addEventListener("click", function(){qbdoo.pause();});
 	qbdoo.setTimer();
 	qbdoo.iterations++;
   },
@@ -232,7 +231,7 @@ var qbdoo = {
 
   },
   
-  pause: function() {
+  pauseGame: function() {
     // use dataset to get value for all the cards.
 	console.log('paused selected');
 	qbdoo.pauseOrPlayBoard('pause');
