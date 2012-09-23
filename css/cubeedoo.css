@@ -233,17 +233,18 @@ hgroup {
 .colors div[data-value="12"] .back { background-color:#ccc;}
 
 /* numbers */
-.numbers i .back {
-	display: block;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
+.numbers .back:after {
+	position:absolute;
+	top:5px; left:5px; right:5px; bottom: 5px;
 	text-align:center;
-	font-size: 24px;
+	font-size: 30px;
 	font-family:Verdana, Geneva, sans-serif;
-	line-height: 50px;
+	line-height: 80px;
+	font-weight: bold;
+	color: #bada55;
+	border: 1px solid rgb(119, 160, 215);
 }
+.numbers  .back {-webkit-transform: rotatey(180deg);}
 .level1 div .back {line-height: 65px;}
 .level2 div .back {line-height: 55px;}
 .level3 div .back {line-height: 45px;}
