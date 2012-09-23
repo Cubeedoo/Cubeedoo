@@ -40,7 +40,7 @@ var qbdoo = {
 			qbdoo.levelUp();	
 		}
 
-		qbdoo.loadHighScores();
+		//qbdoo.loadHighScores();
 
 		qbdoo.gameover.style.display = 'none';
 		qbdoo.levelover.style.display = 'none';
@@ -122,12 +122,12 @@ var qbdoo = {
 		if (qbdoo.matched()) {
 			//then hide them
 			qbdoo.hideCards();
-		} 
+		} else {
 
 		//remove class whether or not matched
 		qbdoo.flipped[0].classList.remove('flipped');
 		qbdoo.flipped[1].classList.remove('flipped');
-
+		}
 		// once done, allow game to continue
 		qbdoo.pauseFlipping = false;
 
@@ -149,8 +149,16 @@ var qbdoo = {
 
 	// nullify cards upon match
 	hideCards: function() {
-		qbdoo.flipped[0].dataset['value'] = 0;
-		qbdoo.flipped[1].dataset['value'] = 0;
+		qbdoo.flipped[0].classList.add('matched');
+		qbdoo.flipped[1].classList.add('matched');
+		setTimeout(function(){
+			var matched = document.querySelectorAll('div.matched'), i = 0;
+			for(; i < 2; i++){
+				matched[i].dataset['value'] = 0;
+				matched[i].classList.remove('matched');
+				matched[i].classList.remove('flipped');
+			}
+		}, 300);
 	},
 
 	// check level status 

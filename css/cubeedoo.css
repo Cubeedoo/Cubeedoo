@@ -84,7 +84,7 @@ article > footer p {
 	margin: 1%;
 	float: left;
 	-webkit-transform-style: preserve-3d;
-	-webkit-transition: 0.5s;
+	-webkit-transition: 0.25s;
 	cursor: pointer; /* for desktop */
 }
 
@@ -118,13 +118,24 @@ article > footer p {
 	-webkit-backface-visibility:hidden;
 	
 }
-
-div.flipped {
+ 
+#board > div.flipped {
 	-webkit-transform: rotatey(180deg) translatez(0);
-	-webkit-transition: 0.5s linear;
 }
+#board > div.matched {
+	-webkit-transform: rotatey(180deg) translatez(0);
+	-webkit-animation: fade 500ms forwards;	
+}
+#board > div.matched .front {display: none; -webkit-transform: scale(0) !important;}
 
-div[data-value="0"] {visibility: hidden;}
+@-webkit-keyframes fade {
+	0%   {-webkit-transform: scale(1) rotate(0deg) translatez(0);}
+	50%, 100% {-webkit-transform: scale(0) rotate(720deg) translatez(0);}	
+} 
+#board div[data-value="0"] {
+	visibility: hidden; 
+	-webkit-transition-duration:0; /* overwrites the transition duration for flipping */
+}
 
 /* THE BUTTONS */
 
@@ -155,9 +166,11 @@ footer div {
 	white-space:nowrap; 
 	text-overflow:ellipsis;
 }
-.scores{float:left}
-.menu{float:right}
-.level {width: 30%; float: left;}
+.scores{float:right;}
+.menu{float:left}
+.level {width: 50%; float: left;}
+
+
 /*
 
 /*
