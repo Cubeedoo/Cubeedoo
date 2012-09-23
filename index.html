@@ -4,12 +4,17 @@
 	<meta charset="utf-8"/>
 	<title>CuBeeDoo</title>
 	<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-	<meta name="apple-mobile-web-app-capable" content="yes" />
-	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+	<meta name="apple-mobile-web-app-capable" content="yes"/>
+	<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+
 	<link rel="shortcut icon" href="/icon.png"/>
 	<link rel="apple-touch-icon" href="/appleicon.png"/> 
-	<link rel="apple-touch-startup-image" href="startup.png" />
+	<link rel="apple-touch-startup-image" href="startup.png"/>
 	<link rel="stylesheet" href="css/cubeedoo.css"/>
+    <link rel="apple-touch-icon" href="touch-icon-iphone.png" />
+<link rel="apple-touch-icon" sizes="72x72" href="touch-icon-ipad.png" />
+<link rel="apple-touch-icon" sizes="114x114" href="touch-icon-iphone4.png" /> 
+
 </head> 
 <body>
 	<article class="paused">
@@ -24,15 +29,6 @@
 				<div class="control menu" id="menu">Menu</div>
 				<div class="control scores">Scores</div>
 				<div class="level">Level: <output>1</output></div>
-				<!--  <output id="seconds"></output>
-				<ul>
-					<li id="timer">  
-						<output id="seconds"></output>
-					</li>
-					<li><button id="pause">Pause</button></li> 
-					<li><button id="mutebutton">Mute</button></li>
-					<li id="score">Score: <output>0</output></li>
-				</ul>-->
 			</footer>    
 
 			<div id="board" class="level1">
@@ -167,6 +163,14 @@
 				<li><a href="about/david.html">About David</a></li>
 				<li><a href="about/max.html">About Max</a></li>
 			</ul>
+            <ul>
+					<li id="timer">  
+						<output id="seconds"></output>
+					</li>
+					<li><button id="pause">Pause</button></li> 
+					<li><button id="mutebutton">Mute</button></li>
+					<li id="score">Score: <output>0</output></li>
+				</ul>
 
 			<p>Theme: <select onChange="document.getElementById('game').setAttribute('class',this.value);">
 				<option value="colors">Colors</option>

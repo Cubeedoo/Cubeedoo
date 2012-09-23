@@ -24,10 +24,7 @@ body {
 		-webkit-repeating-linear-gradient(135deg, transparent 0, transparent 4px, white 4px, white 8px);
 }
 
-@media only screen and (max-width: 500px) {
-  article > header, article > footer {display:none;}
-  section, body, #game {margin:0;} 
-}
+
 
 
 
@@ -54,6 +51,12 @@ article > footer p {
 	background-color: #bada55;
 	position:relative; 
 	}
+	
+	
+/* MEDIA QUERIES:
+   if user is on a large screen, make the app smaller and show page header and footer.
+   if user is on small mobile device, show only the game, in full screen 
+*/
 @media only screen and (min-width: 500px) {
   #game {
 	width:320px; 
@@ -63,6 +66,10 @@ article > footer p {
 	border-radius: 3px;
 	border: 1px solid #999;
   }
+}
+@media only screen and (max-width: 500px) {
+  article > header, article > footer {display:none;}
+  section, body, #game {margin:0;} 
 }
 #board{ 
 	color:#fff; 
@@ -85,8 +92,20 @@ article > footer p {
 	float: left;
 	-webkit-transform-style: preserve-3d;
 	-webkit-transition: 0.25s;
+	box-shadow: 1px 1px 1px rgba(0,0,0,0.25);
 	cursor: pointer; /* for desktop */
 }
+/* size of cards:
+   No matter the size of the board, the cards should fit.
+   we set the board to accept 5 and 6 rows for level 2 and 3 respectively
+*/
+#board.level2 > div{
+	height: 19%;
+}
+#board.level3 > div{
+	height: 15%;
+}
+
 
 /* THE CARDS */
 
@@ -121,6 +140,7 @@ article > footer p {
  
 #board > div.flipped {
 	-webkit-transform: rotatey(180deg) translatez(0);
+	box-shadow: -1px 1px 1px rgba(0,0,0,0.25);
 }
 #board > div.matched {
 	-webkit-transform: rotatey(180deg) translatez(0);
@@ -189,13 +209,6 @@ footer div {
 	text-align: center;
 	}
 	
-#board.level2 div{
-	height: 50px;
-}
-#board.level3 div{
-	height: 50px;
-	margin: 8px 15px;
-}
 
 div[data-value]:before,
 div[data-value]:after {
@@ -218,6 +231,12 @@ hgroup {
 }
 
 /* colors */
+.colors .back { 
+	top: 5px; right: 5px; left: 5px; bottom: 5px; 
+	border-radius: 5px;
+	background-image:
+	  -webkit-linear-gradient(-45deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
+}
 .colors div[data-value="0"] .back  { background-color:transparent;}
 .colors div[data-value="1"] .back  { background-color:#F00;}
 .colors div[data-value="2"] .back  { background-color:#090;}
@@ -232,8 +251,9 @@ hgroup {
 .colors div[data-value="11"] .back { background-color:#666}
 .colors div[data-value="12"] .back { background-color:#ccc;}
 
-/* numbers */
-.numbers .back:after {
+/* numbers  and shapes */
+.numbers .back:after,
+.shapes .back:after {
 	position:absolute;
 	top:5px; left:5px; right:5px; bottom: 5px;
 	text-align:center;
@@ -243,6 +263,14 @@ hgroup {
 	font-weight: bold;
 	color: #bada55;
 	border: 1px solid rgb(119, 160, 215);
+}
+.level2 .numbers .back:after,
+.level2 .shapes .back:after {
+	line-height: 65px;
+}
+.level2 .numbers .back:after,
+.level2 .shapes .back:after {
+	line-height: 65px;
 }
 .numbers  .back {-webkit-transform: rotatey(180deg);}
 .level1 div .back {line-height: 65px;}
@@ -263,48 +291,29 @@ hgroup {
 .numbers div[data-value="12"] .back:after{ content:'12'}
 
 
-/* animals */
-.animals i {
-	background-image:url(../i/animals.png);
-	background-color: #fff;
-	background-repeat:no-repeat
-}
+.shapes  .back {-webkit-transform: rotatey(180deg); background-color: #fff;}
+.shapes .back:after {font-size: 40px; line-height:70px;}
+.shapes div[data-value="0"] div{ content:''; display: none;}
+.shapes div[data-value="1"] .back:after{ content:'★';}
+.shapes div[data-value="2"] .back:after{ content:'⚫';}
+.shapes div[data-value="3"] .back:after{ content:'⬣';}
+.shapes div[data-value="4"] .back:after{ content:'◼';}
+.shapes div[data-value="5"] .back:after{ content:'⬆';}
+.shapes div[data-value="6"] .back:after{ content:'►';}
+.shapes div[data-value="7"] .back:after{ content:'♦';}
+.shapes div[data-value="8"] .back:after{ content:'♥';}
+.shapes div[data-value="9"] .back:after{ content:'♣';font-size: 50px;}
+.shapes div[data-value="10"] .back:after{ content:'♠';font-size: 50px;}
+.shapes div[data-value="11"] .back:after{ content:'☻'}
+.shapes div[data-value="12"] .back:after{ content:'⬇';}
 
 
-.animals div[data-value="0"] div { display: none;}
-.animals div[data-value="1"] .back { background-position: 0 0;}
-.animals div[data-value="2"] .back { background-position:-50px 0;}
-.animals div[data-value="3"] .back { background-position:0 -70px;}
-.animals div[data-value="4"] .back { background-position:-50px -70px;}
-.animals div[data-value="5"] .back { background-position:0 -146px;}
-.animals div[data-value="6"] .back { background-position:-50px -146px;}
-.animals div[data-value="7"] .back { background-position:0 -220px;}
-.animals div[data-value="8"] .back { background-position:-50px -220px;}
-.animals div[data-value="9"] .back { background-position:0 -280px;}
-.animals div[data-value="10"] .back { background-position:-50px -280px;}
-.animals div[data-value="11"] .back { background-position:0;}
-.animals div[data-value="12"] .back { background-position:-50px;}
-
-
-.animals .level1 div[data-value="0"] div { display: none;}
-.animals .level1 div[data-value="1"] .back { background-position: 0 11px;}
-.animals .level1 div[data-value="2"] .back { background-position:-50px 11px;}
-.animals .level1 div[data-value="3"] .back { background-position:0 -60px;}
-.animals .level1 div[data-value="4"] .back { background-position:-50px -60px;}
-.animals .level1 div[data-value="5"] .back { background-position:0 -136px;}
-.animals .level1 div[data-value="6"] .back { background-position:-50px -136px;}
-.animals .level1 div[data-value="7"] .back { background-position:0 -210px;}
-.animals .level1 div[data-value="8"] .back { background-position:-50px -210px;}
-.animals .level1 div[data-value="9"] .back { background-position:0 -270px;}
-.animals .level1 div[data-value="10"] .back { background-position:-50px -270px;}
-.animals .level1 div[data-value="11"] .back { background-position:0;}
-.animals .level1 div[data-value="12"] .back { background-position:-50px;}
 
 #board div[data-value="0"],
 #board div[data-value="0"]:after,
-#board div[data-value="0"]:before
- { visibility: hidden;
- background: transparent;
+#board div[data-value="0"]:before{ 
+	visibility: hidden;
+	background: transparent;
 }
 
 
