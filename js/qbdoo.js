@@ -9,6 +9,8 @@ var qbdoo = {
 	game: document.querySelector("article"),
 	board: document.querySelector("#board"),
 	footer: document.querySelector("article footer"),
+	highscorepage: document.querySelector("#highscores"),
+	highscorelist: document.querySelectorAll("#highscorelist li"),
 
 	cards: 16,
 	iterations: 0,
@@ -40,7 +42,9 @@ var qbdoo = {
 			qbdoo.levelUp();	
 		}
 
-		//qbdoo.loadHighScores();
+		qbdoo.maxHighScores = qbdoo.highscorelist.length;
+		qbdoo.loadHighScores();
+		qbdoo.renderHighScores();
 
 		qbdoo.gameover.style.display = 'none';
 		qbdoo.levelover.style.display = 'none';
@@ -314,6 +318,7 @@ var qbdoo = {
 	addHighScore: function(score, player) {
 		qbdoo.highScores[qbdoo.highScores.length] = { score: score, player: player };
 		qbdoo.sortHighScores();
+		qbdoo.renderHighScores(score, player);
 
 		console.log(qbdoo.highScores);
 	},
@@ -342,9 +347,36 @@ var qbdoo = {
 
 	loadHighScores: function() {
 		var scores = localStorage.getItem("highScores");
-		if (typeof scores !== "undefined") {
+		if (scores) {
 			qbdoo.highScores = JSON.parse(scores);
 			qbdoo.sortHighScores();
+		}
+	},
+	
+	renderHighScores: function(score, player) {
+		var classname = "";
+		var highlighted = false;
+		
+		for (var i = 0; i < qbdoo.maxHighScores; i++) {
+			if (i < qbdoo.highScores.length) {
+				qbdoo.highscorelist[i].innerHTML = "<em>" + qbdoo.highScores[i].score + "</em> " + qbdoo.highScores[i].player;
+
+				// if provided, highlight score from current game
+				if (!highlighted && typeof player !== "undefined" && typeof score !== "undefined") {
+					if (qbdoo.highScores[i].player == player && qbdoo.highScores[i].score == score) {
+						classname = "current";
+						highlighted = true;
+					}
+				}
+				else {
+					classname = "";
+				}
+			}
+			else {
+				qbdoo.highscorelist[i].innerHTML = "";
+			}
+
+			qbdoo.highscorelist[i].className = classname;
 		}
 	}
 };
