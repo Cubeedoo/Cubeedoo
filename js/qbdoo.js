@@ -334,7 +334,7 @@ var qbdoo = {
 
 	loadHighScores: function() {
 		var scores = localStorage.getItem("highScores");
-		if (typeof scores !== "undefined") {
+		if (scores) {
 			qbdoo.highScores = JSON.parse(scores);
 			qbdoo.sortHighScores();
 		}
