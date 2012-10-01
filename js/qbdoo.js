@@ -15,6 +15,7 @@ var qbdoo = {
 	cards: 16,
 	iterations: 0,
 	iterationsPerLevel: 3,
+	possibleLevels: 3,
 	pauseFlipping: false, // after 2nd card, so time to see card
 
 	timerPause: true, //before start of game
@@ -38,6 +39,8 @@ var qbdoo = {
 
 	setupGame: function() {
 		// make sure global arrays are empty
+
+		// go up a level after "iterationsPerLevel" number of iterations
 		if (qbdoo.iterations && (qbdoo.iterations % qbdoo.iterationsPerLevel == 0)) {
 			qbdoo.levelUp();	
 		}
@@ -53,8 +56,8 @@ var qbdoo = {
 
 		// populate all the active blocks with data valuess
 		for (var i = 1; i <= qbdoo.cards; i++) {
-			// get pairs of randome numbers
 
+			// get pairs of random numbers
 			var num = "";
 			while (!num) { 
 				num = qbdoo.randomize(); 
@@ -68,6 +71,8 @@ var qbdoo = {
 		qbdoo.pauseOrPlayBoard('pause');
 		qbdoo.events();
 		qbdoo.setTimer();
+
+		// add to iterations so that iterationsPerLevel will eventually cause a level increase.
 		qbdoo.iterations++;
 	},
 
@@ -83,16 +88,20 @@ var qbdoo = {
 	levelUp: function() {
 		qbdoo.currentLevel++
 
-		if (qbdoo.currentLevel < 4) {
+		if (qbdoo.currentLevel <= qbdoo.possibleLevels) {
+			// look and feel is completely determined by class of the board
 			document.getElementById('board').className = 'level' + qbdoo.currentLevel;
 		}
 
 		document.querySelector('#level output').innerHTML = qbdoo.currentLevel;
 
+		// to increase the possible values of the front of the cards
 		if (qbdoo.currentLevel == 2 || qbdoo.currentLevel == 3) {
 			qbdoo.cards += 4;
 		}
-		else if (qbdoo.currentLevel > 3) {
+		// if we've maxed out the levels, the game gets harder (shorter time) with level increases.
+		else if (qbdoo.currentLevel > qbdoo.possibleLevels) {
+
 			qbdoo.gameDuration -= 5;
 		}
 	},
@@ -113,6 +122,7 @@ var qbdoo = {
 		this.classList.add('flipped');
 		qbdoo.flipped = document.querySelectorAll('div.flipped');
 
+		// if this is the 2nd card currently flipped, check for matching
 		if (qbdoo.flipped.length == 2) {
 			qbdoo.pauseFlipping = true;
 			setTimeout(function() {
@@ -137,6 +147,7 @@ var qbdoo = {
 
 		//check end of level
 		if (qbdoo.isLevelOver()) {
+			console.log('Level is over')
 			qbdoo.endLevel();
 		}
 	},
@@ -168,11 +179,13 @@ var qbdoo = {
 	// check level status 
 	isLevelOver: function() {
 		// not over if any card has data value
-		if (qbdoo.board.querySelectorAll("#board div:not([data-value='0'])").length > 0) {
+		if (qbdoo.board.querySelectorAll("#board div[data-value]:not([data-value='0'])").length > 2) {
+			console.log(qbdoo.board.querySelectorAll("#board div[data-value]:not([data-value='0'])").length)
 			return false;
 		}
 		else {
 			// if no data-values, game is over
+			console.log('foo')
 			return true;
 		}
 	},

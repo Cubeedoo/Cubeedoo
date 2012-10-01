@@ -160,9 +160,15 @@ article > footer p {
 }
 #board > div.matched {
 	-webkit-transform: rotatey(180deg) translatez(0);
-	-webkit-animation: fade 500ms forwards;	
+	-webkit-animation: fade 250ms forwards;	
 }
-#board > div.matched .front {display: none; -webkit-transform: scale(0) !important;}
+#board > div.matched:nth-of-type(2) {
+	-webkit-animation-delay: 250ms;
+}
+#board > div.matched .front {
+	display: none; 
+	-webkit-transform: scale(0) !important;
+}
 
 @-webkit-keyframes fade {
 	0%   {-webkit-transform: scale(1) rotate(0deg) translatez(0);}
@@ -189,7 +195,22 @@ footer {clear: both; padding: 5px; height: 2em;}
 .control {
 	border: 1px solid rgba(0, 0, 0, 0.25);
 	box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.5);
-	background-image: -webkit-linear-gradient(-15deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.025));
+	background-image: 
+		-webkit-linear-gradient(-15deg, 
+			rgba(0, 0, 0, 0), 
+			rgba(0, 0, 0, 0.025));
+	background-image: 
+		-moz-linear-gradient(-15deg, 
+			rgba(0, 0, 0, 0), 
+			rgba(0, 0, 0, 0.025));
+	background-image: 
+		-o-linear-gradient(-15deg, 
+			rgba(0, 0, 0, 0), 
+			rgba(0, 0, 0, 0.025));
+	background-image: 
+		linear-gradient(-15deg, 
+			rgba(0, 0, 0, 0), 
+			rgba(0, 0, 0, 0.025));
 	text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.5);
 	border-radius: 5px;
 }
@@ -248,10 +269,13 @@ hgroup {
 
 /* colors */
 .colors .back { 
-	top: 5px; right: 5px; left: 5px; bottom: 5px; 
+	top: 5px; bottom: 5px;  
+	right: 5px; left: 5px;
 	border-radius: 5px;
 	background-image:
-	  -webkit-linear-gradient(-45deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
+	  -webkit-linear-gradient(-45deg, 
+	  	rgba(255,255,255,0.1), 
+	  	rgba(255,255,255,0));
 }
 .colors div[data-value="0"] .back  { background-color:transparent;}
 .colors div[data-value="1"] .back  { background-color:#F00;}
@@ -270,11 +294,12 @@ hgroup {
 /* numbers  and shapes */
 .numbers .back:after,
 .shapes .back:after {
-	position:absolute;
-	top:5px; left:5px; right:5px; bottom: 5px;
-	text-align:center;
+	position: absolute;
+	top:  5px; bottom: 5px; 
+	left: 5px; right: 5px;
+	text-align: center;
 	font-size: 30px;
-	font-family:Verdana, Geneva, sans-serif;
+	font-family: Verdana, Geneva, sans-serif;
 	line-height: 80px;
 	font-weight: bold;
 	color: #bada55;
