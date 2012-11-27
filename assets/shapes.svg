@@ -1,0 +1,27 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" 
+           "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" height="400" width="400" version="1.0">
+  <desc>Shapes</desc>
+    <!-- Color squares -->
+    <rect x="10" y="10"  width="80" height="80" style="fill: #d60818;" />
+    <rect x="10" y="110" width="80" height="80" style="fill: #ffff33;" />
+    <rect x="10" y="210" width="80" height="80" style="fill: #00FF00;" />
+    <rect x="10" y="310" width="80" height="80" style="fill: #0000FF;" />
+    <!-- Color Circles -->
+    <circle cx="150" cy="50"  r="40" style="fill: #d60818;" />
+    <circle cx="150" cy="150" r="40" style="fill: #ffff33;" />
+    <circle cx="150" cy="250" r="40" style="fill: #00FF00;" />
+    <circle cx="150" cy="350" r="40" style="fill: #0000FF;" />
+    <!-- diamonds -->
+    <polygon points="250,10 210,50 250,90 290,50"     style="fill: #d60818;"/>
+    <polygon points="250,110 210,150 250,190 290,150" style="fill: #FFFF33;"/>
+    <polygon points="250,210 210,250 250,290 290,250" style="fill: #00FF00;"/>
+    <polygon points="250,310 210,350 250,390 290,350" style="fill: #0000FF;"/>
+
+    <!-- Triangles -->
+    <polygon points="310,10  350,90  390,10"    style="fill: #d60818;"/>
+    <polygon points="310,110 350,190 390,110" style="fill: #FFFF33;"/>
+    <polygon points="310,210 350,290 390,210" style="fill: #00FF00;"/>
+    <polygon points="310,310 350,390 390,310" style="fill: #0000FF;"/>
+</svg>
