@@ -1,37 +1,46 @@
 /* CuBeDoo */
 
 var qbdoo = {
+	//game settings
 	currentLevel: 1,
 	currentTheme: "numbers",
 	gameDuration: 120,
 	score: 0,
+    matchedSound: 'assets/match.mp3',
+    failedMatchSound: 'assets/notmatch.mp3',
+    mute: false,
+	cards: 16,
+	iterations: 0,
+	iterationsPerLevel: 3,
+	possibleLevels: 3,
+	maxHighScores: 5,
+
+	storageType: "local",
 
 	game: document.querySelector("article"),
 	board: document.querySelector("#board"),
 	footer: document.querySelector("article footer"),
 	highscorepage: document.querySelector("#highscores"),
 	highscorelist: document.querySelectorAll("#highscorelist li"),
+	gameover: document.getElementById('gameover'),
+	levelover: document.getElementById('levelover'),
+	congrats: document.getElementById('congrats'),
+	btn_mute: document.getElementById('mute'),
+	btn_pause: document.getElementById('pause'),
+	//matchfound: document.getElementById('matchsound'),
+	//failedmatch: document.getElementById('nonmatchsound'),
+	game: document.getElementById('game'),
+	themeChanger: document.getElementById('themechanger'),
 
-	cards: 16,
-	iterations: 0,
-	iterationsPerLevel: 3,
-	possibleLevels: 3,
 	pauseFlipping: false, // after 2nd card, so time to see card
-
 	timerPause: true, //before start of game
 	interval: false, //before start of game
 
-	gameover: document.getElementById('gameover'),
-	levelover: document.getElementById('levelover'),
 
 	cardEls: [],
 	cardarray: [],
 	cardarray2: [],
-
 	highScores: [],
-	maxHighScores: 5,
-
-	storageType: "local",
 
 	init: function() {
 		qbdoo.setupGame();
@@ -69,20 +78,30 @@ var qbdoo = {
 
 		qbdoo.timerPause = true;
 		qbdoo.pauseOrPlayBoard('pause');
-		qbdoo.events();
+		qbdoo.cardClicks();
+		qbdoo.eventHandlers();
 		qbdoo.setTimer();
+		qbdoo.changeTheme();
 
 		// add to iterations so that iterationsPerLevel will eventually cause a level increase.
 		qbdoo.iterations++;
+
+		qbdoo.congratulations('off');
 	},
 
-	events: function() {
+	cardClicks: function() {
 		qbdoo.cardEls = qbdoo.board.querySelectorAll("#board div:not([data-value='0'])");
 
 		var cards = qbdoo.cardEls.length;
 		for (var i = 0; i < cards; i++) {
 			qbdoo.cardEls[i].addEventListener("click", qbdoo.turnCard );
 		}
+	},
+
+	eventHandlers: function(){
+		qbdoo.btn_pause.addEventListener('click', qbdoo.pauseGame);
+		qbdoo.btn_mute.addEventListener('click', qbdoo.toggleMute);
+		qbdoo.themeChanger.addEventListener('change', qbdoo.changeTheme);
 	},
 
 	levelUp: function() {
@@ -136,8 +155,10 @@ var qbdoo = {
 		if (qbdoo.matched()) {
 			//then hide them
 			qbdoo.hideCards();
+			//play sound
+			qbdoo.playSound(true);
 		} else {
-
+			qbdoo.playSound(false);
 		//remove class whether or not matched
 		qbdoo.flipped[0].classList.remove('flipped');
 		qbdoo.flipped[1].classList.remove('flipped');
@@ -161,6 +182,43 @@ var qbdoo = {
 			return false;
 		}
 	},
+	toggleMute: function(){
+		if(qbdoo.mute){
+			qbdoo.mute = false;
+			qbdoo.btn_mute.classList.add('on');
+		} else {
+			qbdoo.mute = true;
+			qbdoo.btn_mute.classList.remove('on');
+		}
+	},
+
+	playSound: function(matched){
+		//if sound is off for game, skip
+		if(qbdoo.mute) {
+			return false;
+		}
+		if(!qbdoo.audio){
+			qbdoo.audio = document.createElement('audio')
+		}
+		if(matched){
+			qbdoo.audio.src = qbdoo.matchedSound;
+		}
+		else {
+			qbdoo.audio.src = qbdoo.failedMatchSound;
+		}
+		qbdoo.audio.play();
+	},
+/*	playSound: function(matched){
+		if(qbdoo.mute) {
+			return false;
+		}
+		if(matched){
+			qbdoo.matchfound.play();
+		} else {
+			qbdoo.failedmatch.play();
+		}
+	},
+*/
 
 	// nullify cards upon match
 	hideCards: function() {
@@ -185,7 +243,6 @@ var qbdoo = {
 		}
 		else {
 			// if no data-values, game is over
-			console.log('foo')
 			return true;
 		}
 	},
@@ -195,6 +252,7 @@ var qbdoo = {
 		// Stop the timer
 		qbdoo.timerPause = true;
 		qbdoo.pauseOrPlayBoard('pause');
+		qbdoo.congratulations('on');
 
 		// Add to score
 		document.querySelector("#score output").innerHTML = qbdoo.score += qbdoo.timeLeft;
@@ -217,7 +275,11 @@ var qbdoo = {
 			qbdoo.timerShell.innerHTML = "";
 		}
 	},
-
+	congratulations: function(state){
+		if(state === 'on') qbdoo.congrats.classList.add('visible');
+		else if(state === 'off') qbdoo.congrats.classList.remove('visible');
+		else qbdoo.congrats.classList.toggle('visible');
+	},
 	getValue: function(mycard) {
 		//get the data-value of the card
 		return mycard.dataset['value'];
@@ -279,11 +341,17 @@ var qbdoo = {
 	},
 
 	pauseGame: function() {
+		var theme, level, timeleft, score;
 		// use dataset to get value for all the cards.
-		console.log('paused selected');
+		console.log('score: ' + qbdoo.score +
+					'\nlevel: ' + qbdoo.currentLevel +
+					'\niterations: ' + qbdoo.iterations +
+					'\ntheme: ' + qbdoo.currentTheme + 
+					'\ntime left: ' + qbdoo.timeLeft);
 		qbdoo.pauseOrPlayBoard('pause');
 
 		// add theme to value set
+		theme = qbdoo.currentTheme;
 
 		// add level to value set
 
@@ -323,9 +391,10 @@ var qbdoo = {
 		}
 	},
 
-	changeTheme: function(klass) {
+	changeTheme: function() {
 		//change the theme by changing the class
-		document.getElementById('game').setAttribute('class', klass);
+		qbdoo.currentTheme = qbdoo.themeChanger.value || qbdoo.currentTheme
+		qbdoo.game.setAttribute('class', qbdoo.currentTheme);
 	},
 
 	addHighScore: function(score, player) {

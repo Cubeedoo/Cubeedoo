@@ -223,11 +223,38 @@ footer div {
 	white-space:nowrap; 
 	text-overflow:ellipsis;
 }
-.scores{float:right;}
+.tools{float:right;}
+.tools span {
+	display: inline-block; 
+	width: 30px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-indent: 30px;
+}
 .menu{float:left}
 .level {width: 50%; float: left;}
+#mute {background-image: 
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='200'><circle cx='55' cy='190' r='25' fill='#FFF' /><path d='M160 213h-34a82 82 0 0 0 -82 -82v-34a116 116 0 0 1 116 116z' fill='#000'/><path d='M184 213A140 140 0 0 0 44 73 V 38a175 175 0 0 1 175 175z' fill='#000'/></svg>"); 
+	background-size: 25px 25px;
+	background-position: 0 0;
+	background-repeat: no-repeat;
+	}
+#mute.on {
+	background-image: 
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='200'><circle cx='55' cy='190' r='25' fill='rgba(255,255,255,0.4)' /><path d='M160 213h-34a82 82 0 0 0 -82 -82v-34a116 116 0 0 1 116 116z' fill='rgba(0,0,0,0.2)'/><path d='M184 213A140 140 0 0 0 44 73 V 38a175 175 0 0 1 175 175z' fill='rgba(0,0,0,0.2)'/></svg>"); 
 
+}
 
+/* MESSAGING */
+
+.messages [id] {display: none;}
+.messages .visible[id] {display: inherit;}
+#congrats.visible {
+	position: absolute; 
+	top: 60px; 
+	width: 100%; 
+	text-align: center;
+}
 /*
 
 /*

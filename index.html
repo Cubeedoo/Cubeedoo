@@ -33,7 +33,10 @@
 		<section id="game" class="colors">
 			<footer>
 				<div class="control menu" id="menu">Menu</div>
-				<div class="control scores">Scores</div>
+				<div class="controlshell tools">
+					<span class="control" id="mute">Mute</span>
+					<span class="control" id="pause">Pause</span>
+				</div>
 				<div class="level" id="level">Level: <output>1</output></div>
 			</footer>    
 
@@ -139,11 +142,13 @@
 					<div class="back"></div>
 					<div class="front"></div>
 				</div>
+			</div>
 
+			<div class="messages">
+				<h1 id="congrats">Congratulations</h1>
 				<p id="levelover"><span>Good Job</span> Score: <output></output></p>
 				<p id="gameover"><span>Game Over</span> Score: <output></output></p>
 			</div>
-
 		</section>
 		
 
@@ -170,12 +175,10 @@
 					<li id="timer">  
 						<output id="seconds"></output>
 					</li>
-					<li><button id="pause">Pause</button></li> 
-					<li><button id="mutebutton">Mute</button></li>
 					<li id="score">Score: <output>0</output></li>
 				</ul>
 
-			<p>Theme: <select onChange="document.getElementById('game').setAttribute('class',this.value);">
+			<p>Theme: <select id="themechanger">
 				<option value="colors">Colors</option>
 				<option value="shapes">Shapes</option>
 				<option value="numbers">Numbers</option>
@@ -189,8 +192,8 @@
 		</footer>
 	</article>
 
-	<audio id="match" preload src="media/match.mp3"></audio>
-	<audio id="fail" preload src="media/fail.mp3"></audio>
+	<audio id="matchsound" preload src="assets/match.mp3"></audio>
+	<audio id="nonmatchsound" preload src="assets/notmatch.mp3"></audio>
 	<audio id="gameover" preload src="media/gameover.mp3"></audio>
 	<script src="js/qbdoo.js"></script> 
 </body>
