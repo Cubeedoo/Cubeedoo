@@ -4,7 +4,7 @@ var qbdoo = {
 	//game settings
 	currentLevel: 1,
 	currentTheme: "numbers",
-	gameDuration: 120,
+	gameDuration: 20,
 	score: 0,
     matchedSound: 'assets/match.mp3',
     failedMatchSound: 'assets/notmatch.mp3',
@@ -58,8 +58,6 @@ var qbdoo = {
 		qbdoo.loadHighScores();
 		qbdoo.renderHighScores();
 
-		qbdoo.gameover.style.display = 'none';
-		qbdoo.levelover.style.display = 'none';
 		qbdoo.cardarray = [];
 		qbdoo.cardarray2 = [];
 
@@ -252,16 +250,15 @@ var qbdoo = {
 		// Stop the timer
 		qbdoo.timerPause = true;
 		qbdoo.pauseOrPlayBoard('pause');
-		qbdoo.congratulations('on');
 
 		// Add to score
-		document.querySelector("#score output").innerHTML = qbdoo.score += qbdoo.timeLeft;
+		document.querySelector("#score output").innerHTML = qbdoo.score += (qbdoo.timeLeft * qbdoo.currentLevel);
 
 		if (qbdoo.timeLeft) {
 			// Announce End of Level
 			qbdoo.levelover.getElementsByTagName('output')[0].innerHTML = qbdoo.score;
 			qbdoo.levelover.style.display = 'block';
-
+			qbdoo.congratulations('on');
 			// restart a new game
 			// leaving the score up for a few seconds
 			setTimeout(function() {
@@ -271,7 +268,7 @@ var qbdoo = {
 		else {
 			// Announce End of Game: update score, show game over and remove timer
 			qbdoo.gameover.getElementsByTagName('output')[0].innerHTML = qbdoo.score;
-			qbdoo.gameover.style.display = 'block';
+			qbdoo.gameover.classList.add('visible');
 			qbdoo.timerShell.innerHTML = "";
 		}
 	},
