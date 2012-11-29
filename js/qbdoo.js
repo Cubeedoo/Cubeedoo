@@ -4,7 +4,7 @@ var qbdoo = {
 	//game settings
 	currentLevel: 1,
 	currentTheme: "numbers",
-	gameDuration: 20,
+	gameDuration: 120,
 	score: 0,
     matchedSound: 'assets/match.mp3',
     failedMatchSound: 'assets/notmatch.mp3',
@@ -286,9 +286,12 @@ var qbdoo = {
 		//class controls animation of timer
 		if (state == "pause") {
 			qbdoo.game.classList.add('paused');
+			window.clearInterval(qbdoo.interval);
+			console.log('ho')
 		}
 		else if (state == "play") {
-			qbdoo.game.classList.remove('paused');			
+			qbdoo.game.classList.remove('paused');	
+			qbdoo.timer();		
 		}
 	},
 
@@ -338,27 +341,36 @@ var qbdoo = {
 	},
 
 	pauseGame: function() {
-		var theme, level, timeleft, score;
-		// use dataset to get value for all the cards.
-		console.log('score: ' + qbdoo.score +
-					'\nlevel: ' + qbdoo.currentLevel +
-					'\niterations: ' + qbdoo.iterations +
-					'\ntheme: ' + qbdoo.currentTheme + 
-					'\ntime left: ' + qbdoo.timeLeft);
+		var currentState = {}, i, key, deck = {}, fulldeck = {};
+		//pause 
 		qbdoo.pauseOrPlayBoard('pause');
 
+//capture values for play
 		// add theme to value set
-		theme = qbdoo.currentTheme;
-
+		currentState.currentTheme = qbdoo.currentTheme;
 		// add level to value set
-
+		currentState.currentLevel = qbdoo.currentLevel;
 		// add timeleft to value set
-
+		currentState.timeLeft = qbdoo.timeLeft;
 		// add score to value set
+		currentState.score = qbdoo.score;
+		// how many iterations
+		currentState.iterations = qbdoo.iterations;
+		// get all the cards values and positions
+		// use dataset to get value for all the cards.
+		var currCards = document.querySelectorAll('#board > div');
+		for (i = 0; i < qbdoo.cards; i++) {
+			for (key in currCards[i].dataset) {
+				deck[key] = currCards[i].dataset[key];
+			}
+			fulldeck[i] = deck
+		}
+		currentState.cardPositions = JSON.stringify(fulldeck); 
 
 		// add to local storage
-
-		// kill the timer
+		localStorage.setItem('cubeedoo', JSON.stringify(currentState));
+		
+		// change the button
 
 		// return
 	},
