@@ -230,11 +230,12 @@ footer div {
 	white-space: nowrap;
 	overflow: hidden;
 	text-indent: 30px;
+	position: relative;
 }
 .menu{float:left}
 .level {width: 50%; float: left;}
 #mute {background-image: 
-        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><polygon points='39,13 22,28 6,28 6,47 22,48 39,63 39,14' style='stroke:#111111;stroke-width:5;stroke-linejoin:round;fill:#111111;' /><path d='M 48,50 69,26'  style='fill:none;stroke:#111111;stroke-width:5;stroke-linecap:round' /><path  d='M 69,50 48,26' style='fill:none;stroke:#111111;stroke-width:5;stroke-linecap:round' /></svg>"); 
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><polygon points='39,13 22,28 6,28 6,47 22,48 39,63 39,14' style='stroke:#111111;stroke-width:5;stroke-linejoin:round;fill:#111111;' /><path d='M 48,50 69,26'  style='fill:none;stroke:#f00;stroke-width:5;stroke-linecap:round' /><path  d='M 69,50 48,26' style='fill:none;stroke:#f00;stroke-width:5;stroke-linecap:round' /></svg>"); 
 	background-size: 30px 30px;
 	background-position: 5px 5px;
 	background-repeat: no-repeat;
@@ -242,9 +243,20 @@ footer div {
 #mute.on {
 	background-image: 
         url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><polygon points='39,13 22,28 6,28 6,47 22,48 39,63 39,14' style='stroke:#111111;stroke-width:5;stroke-linejoin:round;fill:#111111;' /></svg>"); 
-
 }
-
+#pause:before {
+	content:'❙❙';
+	position: absolute;
+	top: 0; left: 0;
+	content: '❙❙';
+	text-indent: 0;
+	width: 30px;
+	text-align: center;
+	letter-spacing: 1px;
+}
+.paused #pause:before {
+	content:'▶';
+}
 /* MESSAGING */
 
 .messages [id] {display: none;}
@@ -381,6 +393,26 @@ hgroup {
 .shapes div[data-value="11"] .back:after{ content:'☻'}
 .shapes div[data-value="12"] .back:after{ content:'⬇';}
 
+
+.shapes2  .back {
+	-webkit-transform: rotatey(180deg); 
+	background-image: url(../assets/shapes.svg);
+	background-size: 300px 300px;
+}
+.level2 .shapes2 .back {background-size: 290px 285px;}
+.shapes2 div[data-value="0"] div{display: none;}
+.shapes2 div[data-value="1"] .back{ background-position: 0 10px;}
+.shapes2 div[data-value="2"] .back{ background-position: -75px -65px;}
+.shapes2 div[data-value="3"] .back{ background-position: -150px -140px;}
+.shapes2 div[data-value="4"] .back{ background-position: -225px -215px;}
+.shapes2 div[data-value="5"] .back{ background-position: 0 -65px;}
+.shapes2 div[data-value="6"] .back{ background-position: -75px -140px;}
+.shapes2 div[data-value="7"] .back{ background-position: -150px -215px;}
+.shapes2 div[data-value="8"] .back{ background-position: -225px 10px;}
+.shapes2 div[data-value="9"] .back{ background-position: 0 -150px;}
+.shapes2 div[data-value="10"] .back{ background-position: -75px -225px;}
+.shapes2 div[data-value="11"] .back{ background-position: -150px 0;}
+.shapes2 div[data-value="12"] .back{ background-position: -225px -75px;}
 
 
 #board div[data-value="0"],

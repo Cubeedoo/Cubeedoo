@@ -14,9 +14,7 @@ var qbdoo = {
 	iterationsPerLevel: 3,
 	possibleLevels: 3,
 	maxHighScores: 5,
-
 	storageType: "local",
-
 	game: document.querySelector("article"),
 	board: document.querySelector("#board"),
 	footer: document.querySelector("article footer"),
@@ -31,11 +29,9 @@ var qbdoo = {
 	//failedmatch: document.getElementById('nonmatchsound'),
 	game: document.getElementById('game'),
 	themeChanger: document.getElementById('themechanger'),
-
 	pauseFlipping: false, // after 2nd card, so time to see card
 	timerPause: true, //before start of game
 	interval: false, //before start of game
-
 
 	cardEls: [],
 	cardarray: [],
@@ -46,14 +42,20 @@ var qbdoo = {
 		qbdoo.setupGame();
 	},
 
-	setupGame: function() {
+	setupGame: function(savedCards) {
+		var deck = {}, card, foo = {};
+		if(savedCards){
+			deck = JSON.parse(savedCards);
+	//		console.dir(deck);
+	//		console.log('end of deck')
+		} else {
 		// make sure global arrays are empty
 
-		// go up a level after "iterationsPerLevel" number of iterations
-		if (qbdoo.iterations && (qbdoo.iterations % qbdoo.iterationsPerLevel == 0)) {
-			qbdoo.levelUp();	
+			// go up a level after "iterationsPerLevel" number of iterations
+			if (qbdoo.iterations && (qbdoo.iterations % qbdoo.iterationsPerLevel == 0)) {
+				qbdoo.levelUp();	
+			}
 		}
-
 		qbdoo.maxHighScores = qbdoo.highscorelist.length;
 		qbdoo.loadHighScores();
 		qbdoo.renderHighScores();
@@ -63,11 +65,20 @@ var qbdoo = {
 
 		// populate all the active blocks with data valuess
 		for (var i = 1; i <= qbdoo.cards; i++) {
-
-			// get pairs of random numbers
-			var num = "";
-			while (!num) { 
-				num = qbdoo.randomize(); 
+			if(savedCards){// get from localstorage
+				foo = deck[i-1];
+				console.log(foo);
+				//value = deck[i-1].value;
+				//position = deck[i-1].position;
+				//card = document.querySelector('div[data-position="4"]');
+				//console.dir(value + ' ' + position);
+				//card.dataset.value = deck[i].value;
+			}
+			else { // get pairs of random numbers
+				var num = "";
+				while (!num) { 
+					num = qbdoo.randomize(); 
+				}
 			}
 
 			// set the data-value for each card
@@ -117,9 +128,15 @@ var qbdoo = {
 			qbdoo.cards += 4;
 		}
 		// if we've maxed out the levels, the game gets harder (shorter time) with level increases.
+		// at first it goes down by 5 seconds per level, and then down by 2 then 1 second per level after 
 		else if (qbdoo.currentLevel > qbdoo.possibleLevels) {
-
-			qbdoo.gameDuration -= 5;
+			if(qbdoo.gameDuration > 60){
+				qbdoo.gameDuration -= 5;
+			} else if (qbdoo.gameDuration > 30){
+				qbdoo.gameDuration -= 2;
+			} else {
+				qbdoo.gameDuration -= 1;
+			}
 		}
 	},
 
@@ -181,12 +198,12 @@ var qbdoo = {
 		}
 	},
 	toggleMute: function(){
-		if(qbdoo.mute){
+		if(qbdoo.mute === true){
 			qbdoo.mute = false;
-			qbdoo.btn_mute.classList.add('on');
+			qbdoo.btn_mute.classList.remove('on');
 		} else {
 			qbdoo.mute = true;
-			qbdoo.btn_mute.classList.remove('on');
+			qbdoo.btn_mute.classList.add('on');
 		}
 	},
 
@@ -287,7 +304,6 @@ var qbdoo = {
 		if (state == "pause") {
 			qbdoo.game.classList.add('paused');
 			window.clearInterval(qbdoo.interval);
-			console.log('ho')
 		}
 		else if (state == "play") {
 			qbdoo.game.classList.remove('paused');	
@@ -341,7 +357,12 @@ var qbdoo = {
 	},
 
 	pauseGame: function() {
-		var currentState = {}, i, key, deck = {}, fulldeck = {};
+		// if game is paused
+		if(qbdoo.game.classList.contains('paused')){
+			qbdoo.playGame();
+			return false;
+		}
+		var currentState = {}, i, key, deck = {}, fulldeck = [];
 		//pause 
 		qbdoo.pauseOrPlayBoard('pause');
 
@@ -359,33 +380,54 @@ var qbdoo = {
 		// get all the cards values and positions
 		// use dataset to get value for all the cards.
 		var currCards = document.querySelectorAll('#board > div');
+		 // return if there are no cards
+		if(!currCards.length) {console.log('error');return;}
 		for (i = 0; i < qbdoo.cards; i++) {
+			cardinfo = [];
 			for (key in currCards[i].dataset) {
 				deck[key] = currCards[i].dataset[key];
+				cardinfo.push(key,": ",deck[key],',');
 			}
-			fulldeck[i] = deck
+			var card = cardinfo.join('');
+			fulldeck.push(card);
 		}
 		currentState.cardPositions = JSON.stringify(fulldeck); 
-
 		// add to local storage
 		localStorage.setItem('cubeedoo', JSON.stringify(currentState));
-		
-		// change the button
 
+		//clear the board
+		for (i = 0; i < qbdoo.cards; i++) {
+			currCards[i].dataset.value = "0";
+		}	
 		// return
 	},
 
 	playGame: function() {
+		var currentState;
+		// game was paused with pause button
+		if(qbdoo.game.classList.contains('paused')){
+			qbdoo.game.classList.remove('paused');
+		}
 		// get local storage
-
-		// set the theme
+		currentState = JSON.parse(localStorage.getItem('cubeedoo'));
+		//console.dir(currentState);
+		// set theme to value set
+		qbdoo.currentTheme = currentState.currentTheme;
+		// set level to value set
+		qbdoo.currentLevel = currentState.currentLevel;
+		// set timeleft to value set
+		qbdoo.timeLeft = currentState.timeLeft;
+		// set score to value set
+		qbdoo.score = currentState.score;
+		// how many iterations
+		qbdoo.iterations = currentState.iterations;
 
 		// set the level
 
 		// set the 24 cards
 
 		// set the score back
-
+		qbdoo.setupGame(currentState.cardPositions);
 		// start the time
 	},
 
