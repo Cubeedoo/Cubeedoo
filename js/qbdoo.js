@@ -424,13 +424,14 @@ var qbdoo = {
 		cardsValues = JSON.parse(currentState.cardPositions);
 		cards = document.querySelectorAll('div[data-position]'); 
 		for(i = 0; i < qbdoo.cards; i++){
-			cards[i].dataset.value = cardsValues[i].value;
-			/*
+			//cards[i].dataset.value = cardsValues[i].value;
+			console.log(cardsValues[i]);
 			
--           for (key in cardsValues[i].dataset) {
--                cards[i] = currCards[i].dataset[key];
--           }
-*/
+for (key in cardsValues[i]) {
+	console.log(cardsValues[i][key]);
+	cards[i].dataset[key] = cardsValues[i][key];
+}
+
 		}
 		//qbdoo.setupGame(currentState.cardPositions);
 		// start the time
