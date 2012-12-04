@@ -53,7 +53,8 @@ var qbdoo = {
 				}
 			}		
 		} else { // not from pause
-
+			// add to iterations so that iterationsPerLevel will eventually cause a level increase.
+			qbdoo.iterations++;
 			// go up a level after "iterationsPerLevel" number of iterations
 			if (qbdoo.iterations && (qbdoo.iterations % qbdoo.iterationsPerLevel == 0)) {
 				qbdoo.levelUp();	
@@ -82,8 +83,7 @@ var qbdoo = {
 		qbdoo.setTimer(savedCards);
 		qbdoo.changeTheme();
 
-		// add to iterations so that iterationsPerLevel will eventually cause a level increase.
-		qbdoo.iterations++;
+
 		qbdoo.congratulations('off');
 	},
 
