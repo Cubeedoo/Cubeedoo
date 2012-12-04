@@ -53,8 +53,6 @@ var qbdoo = {
 				}
 			}		
 		} else { // not from pause
-			// add to iterations so that iterationsPerLevel will eventually cause a level increase.
-			qbdoo.iterations++;
 			// go up a level after "iterationsPerLevel" number of iterations
 			if (qbdoo.iterations && (qbdoo.iterations % qbdoo.iterationsPerLevel == 0)) {
 				qbdoo.levelUp();	
@@ -70,6 +68,8 @@ var qbdoo = {
 			// set the data-value for each card
 			qbdoo.board.querySelector("div[data-position='" + i + "']").setAttribute("data-value", num);
 		  }
+		  // add to iterations so that iterationsPerLevel will eventually cause a level increase.
+			qbdoo.iterations++; console.log('increase')
 		}
 		qbdoo.maxHighScores = qbdoo.highscorelist.length;
 		qbdoo.loadHighScores();
@@ -172,7 +172,7 @@ var qbdoo = {
 
 		//check end of level
 		if (qbdoo.isLevelOver()) {
-			console.log('Level is over')
+			//console.log('Level is over')
 			qbdoo.endLevel();
 		}
 	},
@@ -242,7 +242,7 @@ var qbdoo = {
 	isLevelOver: function() {
 		// not over if any card has data value
 		if (qbdoo.board.querySelectorAll("#board div[data-value]:not([data-value='0'])").length > 2) {
-			console.log(qbdoo.board.querySelectorAll("#board div[data-value]:not([data-value='0'])").length)
+			//console.log(qbdoo.board.querySelectorAll("#board div[data-value]:not([data-value='0'])").length)
 			return false;
 		}
 		else {
@@ -302,7 +302,7 @@ var qbdoo = {
 	},
 
 	setTimer: function(frompaused) {
-		qbdoo.timerShell = document.querySelector("#timer output");
+		qbdoo.timerShell = document.querySelector("#pause output");
 		if(frompaused){
 			qbdoo.timerShell.innerHTML = qbdoo.timeLeft;
 		} else {
