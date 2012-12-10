@@ -4,7 +4,7 @@ var qbdoo = {
 	//game settings
 	currentLevel: 1,
 	currentTheme: "numbers",
-	gameDuration: 120,
+	gameDuration: 50,
 	score: 0,
     matchedSound: 'assets/match.mp3',
     failedMatchSound: 'assets/notmatch.mp3',
@@ -25,6 +25,7 @@ var qbdoo = {
 	congrats: document.getElementById('congrats'),
 	btn_mute: document.getElementById('mute'),
 	btn_pause: document.getElementById('pause'),
+	scoreoutput: document.querySelector("#score output"),
 	//matchfound: document.getElementById('matchsound'),
 	//failedmatch: document.getElementById('nonmatchsound'),
 	game: document.getElementById('game'),
@@ -32,11 +33,11 @@ var qbdoo = {
 	pauseFlipping: false, // after 2nd card, so time to see card
 	timerPause: true, //before start of game
 	interval: false, //before start of game
-
+	player: sessionStorage.getItem('user') || '',
 	cardEls: [],
 	cardarray: [],
 	cardarray2: [],
-	highScores: [],
+	highScores: JSON.parse(localStorage.getItem('scores')) || [],
 
 	init: function() {
 		qbdoo.setupGame();
@@ -161,6 +162,9 @@ var qbdoo = {
 			qbdoo.hideCards();
 			//play sound
 			qbdoo.playSound(true);
+			//increase score
+			qbdoo.scoreoutput.innerHTML = qbdoo.score += 2;
+
 		} else {
 			qbdoo.playSound(false);
 		//remove class whether or not matched
@@ -258,7 +262,7 @@ var qbdoo = {
 		qbdoo.pauseOrPlayBoard('pause');
 
 		// Add to score
-		document.querySelector("#score output").innerHTML = qbdoo.score += (qbdoo.timeLeft * qbdoo.currentLevel);
+		qbdoo.scoreoutput.innerHTML = qbdoo.score += (qbdoo.timeLeft * qbdoo.currentLevel);
 
 		if (qbdoo.timeLeft) {
 			// Announce End of Level
@@ -276,6 +280,7 @@ var qbdoo = {
 			qbdoo.gameover.getElementsByTagName('output')[0].innerHTML = qbdoo.score;
 			qbdoo.gameover.classList.add('visible');
 			qbdoo.timerShell.innerHTML = "";
+			qbdoo.addHighScore();
 		}
 	},
 	congratulations: function(state){
@@ -371,6 +376,8 @@ var qbdoo = {
 		currentState.score = qbdoo.score;
 		// add number of cards displayed at current level
 		currentState.cards = qbdoo.cards;
+		// add audio state
+		currentState.mute = qbdoo.mute;
 		// how many iterations
 		currentState.iterations = qbdoo.iterations;
 		// get all the cards values and positions
@@ -399,14 +406,16 @@ var qbdoo = {
 		}
 		// get local storage
 		currentState = JSON.parse(localStorage.getItem('cubeedoo'));
-
+		qbdoo.reset('cubeedoo');
 		// set theme to value set
 		qbdoo.currentTheme = currentState.currentTheme;
 		// set level to value set
 		qbdoo.currentLevel = currentState.currentLevel;
 		// set timeleft to value set
 		qbdoo.timeLeft = currentState.timeLeft;
-		console.log(qbdoo.timeLeft)
+
+		// add audio state
+		qbdoo.mute = currentState.mute;
 		// set score to value set
 		qbdoo.score = currentState.score;
 		// set number of cards displayed at current level
@@ -437,28 +446,33 @@ var qbdoo = {
 		qbdoo.game.setAttribute('class', qbdoo.currentTheme);
 	},
 
-	addHighScore: function(score, player) {
-		qbdoo.highScores[qbdoo.highScores.length] = { score: score, player: player };
+
+// HIGH SCORES
+	addHighScore: function() {
+		var score = qbdoo.score, player = qbdoo.player;
+		if(!player) {
+			player = qbdoo.player = prompt('Enter your name');
+			sessionStorage.setItem('user', player)
+		}
+		qbdoo.highScores[qbdoo.highScores.length] = [score, player];
 		qbdoo.sortHighScores();
 		qbdoo.renderHighScores(score, player);
-
-		console.log(qbdoo.highScores);
+		qbdoo.saveHighScores();
 	},
 
 	sortHighScores: function() {
 		// custom sorting function to compare score for each object
 		var scores = qbdoo.highScores.sort(function(a, b) {
-			if (a.score > b.score) {
+			if (a[0] > b[0]) {
 				return -1;
 			}
-			else if (a.score == b.score) {
+			else if (a[0] == b[0]) {
 				return 0;
 			}
 			else {
 				return 1;
 			}
 		});
-
 		// make sure we don't have more scores than we need
 		qbdoo.highScores = scores.slice(0, qbdoo.maxHighScores);
 	},
@@ -471,21 +485,21 @@ var qbdoo = {
 		var scores = localStorage.getItem("highScores");
 		if (scores) {
 			qbdoo.highScores = JSON.parse(scores);
-			qbdoo.sortHighScores();
 		}
+		qbdoo.sortHighScores();
 	},
-	
+	// put the high scores on the screen
 	renderHighScores: function(score, player) {
 		var classname = "";
 		var highlighted = false;
 		
 		for (var i = 0; i < qbdoo.maxHighScores; i++) {
 			if (i < qbdoo.highScores.length) {
-				qbdoo.highscorelist[i].innerHTML = "<em>" + qbdoo.highScores[i].score + "</em> " + qbdoo.highScores[i].player;
+				qbdoo.highscorelist[i].innerHTML = qbdoo.highScores[i][1].toUpperCase() + ": <em>" + qbdoo.highScores[i][0] + "</em> ";
 
 				// if provided, highlight score from current game
 				if (!highlighted && typeof player !== "undefined" && typeof score !== "undefined") {
-					if (qbdoo.highScores[i].player == player && qbdoo.highScores[i].score == score) {
+					if (qbdoo.highScores[i][1] == player && qbdoo.highScores[i][0] == score) {
 						classname = "current";
 						highlighted = true;
 					}
@@ -497,9 +511,11 @@ var qbdoo = {
 			else {
 				qbdoo.highscorelist[i].innerHTML = "";
 			}
-
-			qbdoo.highscorelist[i].className = classname;
+			if(classname) qbdoo.highscorelist[i].className = classname;
 		}
+	},
+	reset: function(item){
+		localStorage.removeItem(item);
 	}
 };
 
