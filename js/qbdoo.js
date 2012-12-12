@@ -4,14 +4,14 @@ var qbdoo = {
 	//game settings
 	currentLevel: 1,
 	currentTheme: "numbers",
-	gameDuration: 120,
+	gameDuration: 40,
 	score: 0,
     matchedSound: 'assets/match.mp3',
     failedMatchSound: 'assets/notmatch.mp3',
     mute: false,
 	cards: 16,
 	iterations: 0,
-	iterationsPerLevel: 3,
+	iterationsPerLevel: 2,
 	possibleLevels: 3,
 	maxHighScores: 5,
 	storageType: "local",
@@ -40,6 +40,7 @@ var qbdoo = {
 	highScores: JSON.parse(localStorage.getItem('scores')) || [],
 
 	init: function() {
+		qbdoo.pauseGame('newgame'); //stores settings
 		qbdoo.setupGame();
 	},
 
@@ -83,7 +84,6 @@ var qbdoo = {
 		qbdoo.eventHandlers();
 		qbdoo.setTimer(savedCards);
 		qbdoo.changeTheme();
-		qbdoo.pauseGame('newgame'); //stores settings
 
 
 		qbdoo.congratulations('off');
@@ -108,6 +108,8 @@ var qbdoo = {
 		qbdoo.btn_pause.addEventListener('click', qbdoo.startNewGame);
 	},
 	startNewGame: function(){
+		qbdoo.setAndShowScore(0);
+		qbdoo.board.className = 'level' + qbdoo.alterAValue('currentLevel');
 		qbdoo.playGame('newgame');
 		qbdoo.gameover.classList.remove('visible');
 	},
@@ -171,7 +173,7 @@ var qbdoo = {
 			//play sound
 			qbdoo.playSound(true);
 			//increase score
-			qbdoo.scoreoutput.innerHTML = qbdoo.score += 2;
+			qbdoo.setAndShowScore(qbdoo.score += 2);
 
 		} else {
 			qbdoo.playSound(false);
@@ -275,7 +277,7 @@ var qbdoo = {
 
 		if (qbdoo.timeLeft) {
 			// Announce End of Level
-			qbdoo.levelover.getElementsByTagName('output')[0].innerHTML = qbdoo.score;
+			//qbdoo.levelover.getElementsByTagName('output')[0].innerHTML = qbdoo.score;
 			qbdoo.levelover.style.display = 'block';
 			qbdoo.congratulations('on');
 			// restart a new game
@@ -293,6 +295,9 @@ var qbdoo = {
 			//changes the pause link to new game link
 			qbdoo.pauseToNewGame();
 		}
+	},
+	setAndShowScore: function(value){
+		qbdoo.scoreoutput.innerHTML = qbdoo.score = value;
 	},
 	congratulations: function(state){
 		if(state === 'on') qbdoo.congrats.classList.add('visible');
@@ -382,8 +387,6 @@ var qbdoo = {
 //capture values for play
 		// add theme to value set
 		currentState.currentTheme = qbdoo.currentTheme;
-		// add level to value set
-		currentState.currentLevel = qbdoo.currentLevel;
 		// add timeleft to value set
 		currentState.timeLeft = qbdoo.timeLeft;
 		// add score to value set
@@ -396,7 +399,9 @@ var qbdoo = {
 		currentState.iterations = qbdoo.iterations;
 		// get all the cards values and positions
 		// use dataset to get value for all the cards.
-  		if(newgame == 'newgame') {
+  		if(newgame == 'newgame') { 
+  			   currentState.currentLevel = qbdoo.currentLevel;
+			   currentState.score = 0;
                sessionStorage.setItem('defaultvalues', JSON.stringify(currentState));
                return;
        	} else {
@@ -410,6 +415,9 @@ var qbdoo = {
              	cardinfo.push(currCards[i].dataset);
            }
         }     
+
+		// add level to value set
+		currentState.currentLevel = qbdoo.currentLevel;
         currentState.cardPositions = JSON.stringify(cardinfo);
 		// add to local storage
 		localStorage.setItem('pausedgame', JSON.stringify(currentState));
@@ -439,6 +447,7 @@ var qbdoo = {
 		qbdoo.mute = currentState.mute;
 		// set level to value set
 		qbdoo.currentLevel = currentState.currentLevel;
+
 		// set timeleft to value set
 		qbdoo.timeLeft = currentState.timeLeft;
 
@@ -460,8 +469,13 @@ var qbdoo = {
 	alterAValue: function(item, value){
 		// get saved state, alter the value, put back in session storage
 		var currentState = JSON.parse(sessionStorage.getItem('defaultvalues'));
-		currentState[item] = value;
+		if(value) {
+			currentState[item] = value;
+		} else {
+			qbdoo[item] = currentState[item];
+		}
 		sessionStorage.setItem('defaultvalues', JSON.stringify(currentState));
+		return value;
 	},
 	clearAll: function() {
 		// sets all values to 0
