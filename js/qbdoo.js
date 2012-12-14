@@ -581,15 +581,14 @@ var qbdoo = {
 				qbdoo.highscorelist[i].innerHTML = qbdoo.highScores[i][1].toUpperCase() + ": <em>" + qbdoo.highScores[i][0] + "</em> ";
 				// if provided, highlight score from current game
 				if (typeof player !== "undefined" && typeof score !== "undefined") {
-					if (qbdoo.highScores[i][1] == player && qbdoo.score == score) {
-						classname = "current";
+					if (qbdoo.highScores[i][1] == player && qbdoo.highScores[i][0] == score) {
+						qbdoo.highscorelist[i].className = "current";
 					}
 				}
 			}
 			else {
 				qbdoo.highscorelist[i].innerHTML = "";
 			}
-			if(classname) qbdoo.highscorelist[i].className = classname;
 		}
 	},
 /* WEBSQL */
