@@ -14,7 +14,7 @@ var qbdoo = {
 	iterationsPerLevel: 2,
 	possibleLevels: 3,
 	maxHighScores: 5,
-	storageType: "local",
+	storageType: "WEBSQL",
 	game: document.querySelector("article"),
 	board: document.querySelector("#board"),
 	footer: document.querySelector("article footer"),
@@ -37,8 +37,8 @@ var qbdoo = {
 	cardEls: [],
 	cardarray: [],
 	cardarray2: [],
-	highScores: JSON.parse(localStorage.getItem('scores')) || [],
-
+	//highScores: JSON.parse(localStorage.getItem('highScores')) || [],
+	highScores: [],
 	init: function() {
 		qbdoo.pauseGame('newgame'); //stores settings
 		qbdoo.setupGame();
@@ -73,6 +73,9 @@ var qbdoo = {
 		  // add to iterations so that iterationsPerLevel will eventually cause a level increase.
 			qbdoo.iterations++; 
 		}
+		if(qbdoo.storageType !== "local"){
+			qbdoo.loadHighScores();
+		}
 		qbdoo.maxHighScores = qbdoo.highscorelist.length;
 		qbdoo.loadHighScores();
 		qbdoo.renderHighScores();
@@ -84,8 +87,6 @@ var qbdoo = {
 		qbdoo.eventHandlers();
 		qbdoo.setTimer(savedCards);
 		qbdoo.changeTheme();
-
-
 		qbdoo.congratulations('off');
 	},
 
@@ -161,7 +162,7 @@ var qbdoo = {
 			qbdoo.pauseFlipping = true;
 			setTimeout(function() {
 				qbdoo.handleMatching();
-			}, 500);
+			}, 300);
 		}
 	},
 
@@ -503,7 +504,7 @@ var qbdoo = {
 		qbdoo.highScores[qbdoo.highScores.length] = [score, player];
 		qbdoo.sortHighScores();
 		qbdoo.renderHighScores(score, player);
-		qbdoo.saveHighScores();
+		qbdoo.saveHighScores(score, player);
 	},
 
 	sortHighScores: function() {
@@ -523,35 +524,66 @@ var qbdoo = {
 		qbdoo.highScores = scores.slice(0, qbdoo.maxHighScores);
 	},
 
-	saveHighScores: function() {
-		localStorage.setItem("highScores", JSON.stringify(qbdoo.highScores));
+	saveHighScores: function(score, player) {
+		console.log()
+		if(qbdoo.storageType === 'local'){
+			localStorage.setItem("highScores", JSON.stringify(qbdoo.highScores));
+		} else {
+			var db = openDatabase("highscoresDB", "1.0", "All the scores, good and bad", 200000); 
+                db.transaction(function(tx) {
+                  tx.executeSql("INSERT INTO highscoresTable (score, name, date) VALUES (?, ?, ?)", [score, player, new Date()],
+                      function(tx, result) {
+                        console.log('data entered')
+                      }, 
+                      onError);
+                });
+             function onError(tx, error){
+                	console.log('Error: ' + error.message);
+             }
+		}
 	},
 
 	loadHighScores: function() {
-		var scores = localStorage.getItem("highScores");
-		if (scores) {
-			qbdoo.highScores = JSON.parse(scores);
-		}
-		qbdoo.sortHighScores();
+		 if(qbdoo.storageType === 'local'){
+			var scores = localStorage.getItem("highScores");
+			if (scores) {
+				qbdoo.highScores = JSON.parse(scores);
+			}
+			qbdoo.sortHighScores();
+		 } else {
+			var db,i;
+		    if (window.openDatabase) {
+		    	db = openDatabase("highscoresDB", "1.0", "All the scores, good and bad", 200000); 
+		      } // end if opendatabase
+		    db.transaction(function(tx) {
+	         	tx.executeSql("SELECT score, name, date FROM highscoresTable", [], function(tx, result) {
+		           for (var i = 0, item = null; i < result.rows.length; i++) {
+		              item = result.rows.item(i);
+		              qbdoo.highScores[i] = [item['score'], item['name'], item['date']];
+		            } //end for
+		        }, onError);	 // end execute
+		        function onError(){
+					console.dir('ugh')
+		        }
+				qbdoo.sortHighScores();
+		    	qbdoo.renderHighScores();
+		    }); // end transaction
+		}//end else
 	},
+
 	// put the high scores on the screen
 	renderHighScores: function(score, player) {
 		var classname = "";
 		var highlighted = false;
-		
 		for (var i = 0; i < qbdoo.maxHighScores; i++) {
+			qbdoo.highscorelist[i].classList.remove('current');
 			if (i < qbdoo.highScores.length) {
 				qbdoo.highscorelist[i].innerHTML = qbdoo.highScores[i][1].toUpperCase() + ": <em>" + qbdoo.highScores[i][0] + "</em> ";
-
 				// if provided, highlight score from current game
-				if (!highlighted && typeof player !== "undefined" && typeof score !== "undefined") {
-					if (qbdoo.highScores[i][1] == player && qbdoo.highScores[i][0] == score) {
+				if (typeof player !== "undefined" && typeof score !== "undefined") {
+					if (qbdoo.highScores[i][1] == player && qbdoo.score == score) {
 						classname = "current";
-						highlighted = true;
 					}
-				}
-				else {
-					classname = "";
 				}
 			}
 			else {
@@ -560,6 +592,26 @@ var qbdoo = {
 			if(classname) qbdoo.highscorelist[i].className = classname;
 		}
 	},
+/* WEBSQL */
+		createTable: function() {
+				var db,i;
+		    	if (window.openDatabase) {
+		    		db = openDatabase("highscoresDB", "1.0", "All the scores, good and bad", 200000); 
+		      	}
+                db.transaction(function(tx) {
+                  tx.executeSql("CREATE TABLE highscoresTable (id REAL UNIQUE, name TEXT, score TEXT, date DATE )", [],
+                      function(tx) {console.log('highscore table created') },
+                      onError);
+                });
+                function onError(tx, error){
+                	console.log('Error: ' + error.message);
+                }
+              },
+
+
+
+
+
 	reset: function(item){
 		localStorage.removeItem(item);
 	}
