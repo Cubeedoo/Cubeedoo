@@ -4,11 +4,11 @@ var qbdoo = {
 	//game settings
 	currentLevel: 1,
 	currentTheme: "numbers",
-	gameDuration: 40,
+	gameDuration: 30,
 	score: 0,
     matchedSound: 'assets/match.mp3',
     failedMatchSound: 'assets/notmatch.mp3',
-    mute: false,
+    mute: true,
 	cards: 16,
 	iterations: 0,
 	iterationsPerLevel: 2,
@@ -26,6 +26,7 @@ var qbdoo = {
 	btn_mute: document.getElementById('mute'),
 	btn_pause: document.getElementById('pause'),
 	scoreoutput: document.querySelector("#score output"),
+	clearScores: document.getElementById('clearscores'),
 	//matchfound: document.getElementById('matchsound'),
 	//failedmatch: document.getElementById('nonmatchsound'),
 	game: document.getElementById('game'),
@@ -40,7 +41,8 @@ var qbdoo = {
 	//highScores: JSON.parse(localStorage.getItem('highScores')) || [],
 	highScores: [],
 	init: function() {
-		qbdoo.pauseGame('newgame'); //stores settings
+		qbdoo.storeValues('newgame');
+		//qbdoo.pauseGame('newgame'); //stores settings
 		qbdoo.setupGame();
 	},
 
@@ -74,10 +76,16 @@ var qbdoo = {
 			qbdoo.iterations++; 
 		}
 		if(qbdoo.storageType !== "local"){
-			qbdoo.loadHighScores();
+			if(!qbdoo.db){
+				if (window.openDatabase) {
+			    	qbdoo.db = openDatabase("highscoresDB", "1.0", "All the scores, good and bad", 200000); 
+			    }
+			}
+			qbdoo.loadHighScoresSQL();
+			qbdoo.loadHighScoresSQL();
+		} else {
+			qbdoo.loadHighScoresLocal();
 		}
-		qbdoo.maxHighScores = qbdoo.highscorelist.length;
-		qbdoo.loadHighScores();
 		qbdoo.renderHighScores();
 		qbdoo.cardarray = [];
 		qbdoo.cardarray2 = [];
@@ -88,6 +96,7 @@ var qbdoo = {
 		qbdoo.setTimer(savedCards);
 		qbdoo.changeTheme();
 		qbdoo.congratulations('off');
+
 	},
 
 	cardClicks: function() {
@@ -103,20 +112,28 @@ var qbdoo = {
 		qbdoo.btn_pause.addEventListener('click', qbdoo.pauseGame);
 		qbdoo.btn_mute.addEventListener('click', qbdoo.toggleMute);
 		qbdoo.themeChanger.addEventListener('change', qbdoo.changeTheme);
+		qbdoo.clearScores.addEventListener('click',qbdoo.eraseScores);
 	},
+
 	pauseToNewGame: function(){
 		qbdoo.btn_pause.removeEventListener('click', qbdoo.pauseGame);
 		qbdoo.btn_pause.addEventListener('click', qbdoo.startNewGame);
 	},
+
 	startNewGame: function(){
 		qbdoo.setAndShowScore(0);
-		qbdoo.board.className = 'level' + qbdoo.alterAValue('currentLevel');
+		qbdoo.alterAValue('currentLevel')
+		qbdoo.setLevel(qbdoo.currentLevel);
 		qbdoo.playGame('newgame');
-		qbdoo.gameover.classList.remove('visible');
 	},
+
+	setLevel: function(level){
+		qbdoo.board.className = 'level' + level;
+		document.querySelector('#level output').innerHTML = level;
+	},
+
 	levelUp: function() {
 		qbdoo.currentLevel++
-
 		if (qbdoo.currentLevel <= qbdoo.possibleLevels) {
 			// look and feel is completely determined by class of the board
 			document.getElementById('board').className = 'level' + qbdoo.currentLevel;
@@ -147,16 +164,13 @@ var qbdoo = {
 			qbdoo.timerPause = false;
 			qbdoo.pauseOrPlayBoard('play');
 		}
-
 		//can flip cards at this time
 		if (qbdoo.pauseFlipping) {
 			return false;
 		}
-
 		//turns the card by changing the className
 		this.classList.add('flipped');
 		qbdoo.flipped = document.querySelectorAll('div.flipped');
-
 		// if this is the 2nd card currently flipped, check for matching
 		if (qbdoo.flipped.length == 2) {
 			qbdoo.pauseFlipping = true;
@@ -178,9 +192,9 @@ var qbdoo = {
 
 		} else {
 			qbdoo.playSound(false);
-		//remove class whether or not matched
-		qbdoo.flipped[0].classList.remove('flipped');
-		qbdoo.flipped[1].classList.remove('flipped');
+			//remove class whether or not matched
+			qbdoo.flipped[0].classList.remove('flipped');
+			qbdoo.flipped[1].classList.remove('flipped');
 		}
 		// once done, allow game to continue
 		qbdoo.pauseFlipping = false;
@@ -281,21 +295,24 @@ var qbdoo = {
 			//qbdoo.levelover.getElementsByTagName('output')[0].innerHTML = qbdoo.score;
 			qbdoo.levelover.style.display = 'block';
 			qbdoo.congratulations('on');
-			// restart a new game
-			// leaving the score up for a few seconds
-			setTimeout(function() {
-				qbdoo.setupGame();
-			}, 4000);
+			// restart new game leaving the score up for a few seconds
+			setTimeout(function() {qbdoo.setupGame();}, 4000);
 		}
 		else {
+			qbdoo.gameLost();
+		}
+	},
+	gameLost: function(){
+			//kill unflipped cards
+			document.querySelector('.flipped').classList.remove('flipped');
 			// Announce End of Game: update score, show game over and remove timer
 			qbdoo.gameover.getElementsByTagName('output')[0].innerHTML = qbdoo.score;
-			qbdoo.gameover.classList.add('visible');
+			qbdoo.game.classList.add('over');
+			// empty out timer
 			qbdoo.timerShell.innerHTML = "";
 			qbdoo.addHighScore();
 			//changes the pause link to new game link
 			qbdoo.pauseToNewGame();
-		}
 	},
 	setAndShowScore: function(value){
 		qbdoo.scoreoutput.innerHTML = qbdoo.score = value;
@@ -339,7 +356,7 @@ var qbdoo = {
 			qbdoo.interval = setInterval(function() { dropASecond(); }, 1000);
 		}
 
-		function dropASecond() {
+		var dropASecond = function() {
 			if (!qbdoo.timerPause) {
 				qbdoo.timeLeft = qbdoo.timeLeft - 1;
 				qbdoo.timerShell.innerHTML = qbdoo.timeLeft;
@@ -357,35 +374,20 @@ var qbdoo = {
 	randomize: function() {
 		// get a random number 
 		var num = Math.floor(Math.random() * (qbdoo.cards / 2) + 1);
-
 		// make sure that random number isn't already used twice
 		if (qbdoo.cardarray.indexOf(num) < 0) {
 			qbdoo.cardarray.push(num);
 			return num;
 		}
-		
 		if (qbdoo.cardarray2.indexOf(num) < 0) {
 			qbdoo.cardarray2.push(num);
 			return num;
 		}
-
 		return "";
 	},
-
-	pauseGame: function(newgame) {
-		// if game is paused
-        var currentState = {}, i, key, cardinfo = [], fulldeck = [];
-       if(newgame != 'newgame'){
-               // if game is paused
-               if(qbdoo.game.classList.contains('paused')){
-                       qbdoo.playGame();
-                       return false;
-               }
-                //pause 
-               qbdoo.pauseOrPlayBoard('pause');
-      	}
-
-//capture values for play
+	storeValues: function(newgame){
+		var currentState = {};
+		//capture values for play
 		// add theme to value set
 		currentState.currentTheme = qbdoo.currentTheme;
 		// add timeleft to value set
@@ -406,40 +408,50 @@ var qbdoo = {
                sessionStorage.setItem('defaultvalues', JSON.stringify(currentState));
                return;
        	} else {
-           var currCards = document.querySelectorAll('#board > div');
-            // return if there are no cards
-           if(!currCards.length) {
-           		console.log('error');
-           		return;
-           	}
-           for (i = 0; i < qbdoo.cards; i++) {
-             	cardinfo.push(currCards[i].dataset);
-           }
-        }     
-
+       		return currentState;
+       	}
+	},
+	pauseGame: function(newgame) {
+		// if game is paused
+       var currentState = {}, i, currCards, cardinfo = [];
+       if(qbdoo.game.classList.contains('paused')){
+            qbdoo.playGame();
+            return false;
+       }
+        //pause 
+       qbdoo.pauseOrPlayBoard('pause');
+       currentState = qbdoo.storeValues();
+       currCards = document.querySelectorAll('#board > div');
+        // return if there are no cards
+       if(!currCards.length) {
+       		console.log('error');
+       		return;
+       	}
+       for (i = 0; i < qbdoo.cards; i++) {
+         	cardinfo.push(currCards[i].dataset);
+       }
 		// add level to value set
 		currentState.currentLevel = qbdoo.currentLevel;
         currentState.cardPositions = JSON.stringify(cardinfo);
 		// add to local storage
 		localStorage.setItem('pausedgame', JSON.stringify(currentState));
-
 		//clear the board
 		qbdoo.clearAll();	
 		// return
 	},
 
 	playGame: function(newgame) {
-		var cardsValues, cards, i;
+		var cardsValues, cards, i, currentState = {};
 		 // get localStorage or sessionStorage depending on state
 		if(newgame == 'newgame'){
-            var currentState = JSON.parse(sessionStorage.getItem('defaultvalues'));
+            currentState = JSON.parse(sessionStorage.getItem('defaultvalues'));
         } else {
-		// game was paused with pause button
+			// get state via local storage
+			currentState = JSON.parse(localStorage.getItem('pausedgame'));
+			// game was paused with pause button
 			if(qbdoo.game.classList.contains('paused')){
 				qbdoo.game.classList.remove('paused');
 			}
-			// get local storage
-			var currentState = JSON.parse(localStorage.getItem('pausedgame'));
 		}
 		qbdoo.reset('pausedgame');
 		// set theme to value set
@@ -529,46 +541,48 @@ var qbdoo = {
 		if(qbdoo.storageType === 'local'){
 			localStorage.setItem("highScores", JSON.stringify(qbdoo.highScores));
 		} else {
-			var db = openDatabase("highscoresDB", "1.0", "All the scores, good and bad", 200000); 
-                db.transaction(function(tx) {
+			//var db = openDatabase("highscoresDB", "1.0", "All the scores, good and bad", 200000); 
+                qbdoo.db.transaction(function(tx) {
                   tx.executeSql("INSERT INTO highscoresTable (score, name, date) VALUES (?, ?, ?)", [score, player, new Date()],
-                      function(tx, result) {
-                        console.log('data entered')
-                      }, 
-                      onError);
+                      onSuccess, 
+                      qbdoo.onError);
                 });
-             function onError(tx, error){
-                	console.log('Error: ' + error.message);
+             function onSuccess(tx,results){
+                // not sure if needed
              }
 		}
 	},
 
-	loadHighScores: function() {
-		 if(qbdoo.storageType === 'local'){
-			var scores = localStorage.getItem("highScores");
-			if (scores) {
-				qbdoo.highScores = JSON.parse(scores);
-			}
+	loadHighScoresLocal: function() {
+		var scores = localStorage.getItem("highScores");
+		if (scores) {
+			qbdoo.highScores = JSON.parse(scores);
+		}
+		if(qbdoo.storageType === 'local'){
 			qbdoo.sortHighScores();
-		 } else {
-			var db,i;
-		    if (window.openDatabase) {
-		    	db = openDatabase("highscoresDB", "1.0", "All the scores, good and bad", 200000); 
-		      } // end if opendatabase
-		    db.transaction(function(tx) {
-	         	tx.executeSql("SELECT score, name, date FROM highscoresTable", [], function(tx, result) {
-		           for (var i = 0, item = null; i < result.rows.length; i++) {
-		              item = result.rows.item(i);
-		              qbdoo.highScores[i] = [item['score'], item['name'], item['date']];
-		            } //end for
-		        }, onError);	 // end execute
-		        function onError(){
-					console.dir('ugh')
-		        }
-				qbdoo.sortHighScores();
-		    	qbdoo.renderHighScores();
-		    }); // end transaction
-		}//end else
+		}
+	 },
+
+    loadHighScoresSQL: function(){
+		var i;
+	    qbdoo.db.transaction(function(tx) {
+         	tx.executeSql("SELECT score, name, date FROM highscoresTable ORDER BY score DESC", 
+         		[], function(tx, result) {
+
+	           for (var i = 0, item = null; i < result.rows.length; i++) {
+	              item = result.rows.item(i);
+	              qbdoo.highScores[i] = [item['score'], item['name'], item['date']];
+	            } //end for
+	        }, onError);	 // end execute
+	        function onError(tx, error){
+	        	if(error.message.indexOf('no such table')){
+	        		qbdoo.createTable();
+	        	} else {
+            		console.log('Error: ' + error.message);
+            	}
+            }
+	    	qbdoo.renderHighScores();
+	    }); // end transaction
 	},
 
 	// put the high scores on the screen
@@ -578,7 +592,7 @@ var qbdoo = {
 		for (var i = 0; i < qbdoo.maxHighScores; i++) {
 			qbdoo.highscorelist[i].classList.remove('current');
 			if (i < qbdoo.highScores.length) {
-				qbdoo.highscorelist[i].innerHTML = qbdoo.highScores[i][1].toUpperCase() + ": <em>" + qbdoo.highScores[i][0] + "</em> ";
+				qbdoo.highscorelist[i].innerHTML = qbdoo.highScores[i][1].toUpperCase() + ": <em>" + parseInt(qbdoo.highScores[i][0]) + "</em> ";
 				// if provided, highlight score from current game
 				if (typeof player !== "undefined" && typeof score !== "undefined") {
 					if (qbdoo.highScores[i][1] == player && qbdoo.highScores[i][0] == score) {
@@ -591,25 +605,30 @@ var qbdoo = {
 			}
 		}
 	},
+	eraseScores: function(){
+		if(qbdoo.storageType === 'local'){
+			qbdoo.reset("highScores");
+		} else {
+            qbdoo.db.transaction(function(tx) {
+              tx.executeSql("DROP TABLE highscoresTable", [],
+                  qbdoo.createTable, 
+                  qbdoo.onError);
+            });
+		}
+	},
 /* WEBSQL */
-		createTable: function() {
-				var db,i;
-		    	if (window.openDatabase) {
-		    		db = openDatabase("highscoresDB", "1.0", "All the scores, good and bad", 200000); 
-		      	}
-                db.transaction(function(tx) {
-                  tx.executeSql("CREATE TABLE highscoresTable (id REAL UNIQUE, name TEXT, score TEXT, date DATE )", [],
-                      function(tx) {console.log('highscore table created') },
-                      onError);
-                });
-                function onError(tx, error){
-                	console.log('Error: ' + error.message);
-                }
-              },
+	createTable: function() {
+		var i;
+        qbdoo.db.transaction(function(tx) {
+          tx.executeSql("CREATE TABLE highscoresTable (id REAL UNIQUE, name TEXT, score NUMBER, date DATE )", [],
+              function(tx) {console.log('highscore table created') },
+              qbdoo.onError);
+        });
+      },
 
-
-
-
+    onError: function(tx, error){
+        console.log('Error: ' + error.message);
+    },
 
 	reset: function(item){
 		localStorage.removeItem(item);
