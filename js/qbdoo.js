@@ -4,28 +4,33 @@ var qbdoo = {
 	//game settings
 	currentLevel: 1,
 	currentTheme: "numbers",
-	gameDuration: 30,
+	gameDuration: 90,
 	score: 0,
     matchedSound: 'assets/match.mp3',
     failedMatchSound: 'assets/notmatch.mp3',
     mute: true,
-	cards: 16,
+	cardCount: 16,
 	iterations: 0,
-	iterationsPerLevel: 2,
+	iterationsPerLevel: 1,
 	possibleLevels: 3,
 	maxHighScores: 5,
 	storageType: "WEBSQL",
+	cards: document.querySelectorAll('div[data-position]'),
+	currFlipped: document.getElementsByClassName('flipped'),
+	currMatched: document.getElementsByClassName('matched'),
 	game: document.querySelector("article"),
 	board: document.querySelector("#board"),
 	footer: document.querySelector("article footer"),
 	highscorepage: document.querySelector("#highscores"),
-	highscorelist: document.querySelectorAll("#highscorelist li"),
+	highscorelist: document.getElementById("highscorelist"),
 	gameover: document.getElementById('gameover'),
 	levelover: document.getElementById('levelover'),
+	levelOutput: document.querySelector('#level output'),
 	congrats: document.getElementById('congrats'),
 	btn_mute: document.getElementById('mute'),
 	btn_pause: document.getElementById('pause'),
 	scoreoutput: document.querySelector("#score output"),
+	timerShell: document.querySelector("#pause output"),
 	clearScores: document.getElementById('clearscores'),
 	//matchfound: document.getElementById('matchsound'),
 	//failedmatch: document.getElementById('nonmatchsound'),
@@ -42,18 +47,17 @@ var qbdoo = {
 	highScores: [],
 	init: function() {
 		qbdoo.storeValues('newgame');
-		//qbdoo.pauseGame('newgame'); //stores settings
+		qbdoo.pauseGame('newgame'); //stores settings
 		qbdoo.setupGame();
 	},
 
 	setupGame: function(savedCards) {
 		var cardsValues, cards;
 		if(savedCards){ // if starting from pause
-			cardsValues = JSON.parse(savedCards);
-			cards = document.querySelectorAll('div[data-position]'); 
-			for(i = 0; i < qbdoo.cards; i++){
+			cardsValues = JSON.parse(savedCards); 
+			for(i = 0; i < qbdoo.cardCount; i++){
 				for (key in cardsValues[i]) {
-					cards[i].dataset[key] = cardsValues[i][key];
+					qbdoo.cards[i].dataset[key] = cardsValues[i][key];
 				}
 			}		
 		} else { // not from pause
@@ -62,7 +66,7 @@ var qbdoo = {
 				qbdoo.levelUp();	
 			}
 			// populate all the active blocks with data valuess
-			for (var i = 1; i <= qbdoo.cards; i++) {
+			for (var i = 1; i <= qbdoo.cardCount; i++) {
 				  // get pairs of random numbers
 					var num = "";
 					while (!num) { 
@@ -96,28 +100,29 @@ var qbdoo = {
 		qbdoo.setTimer(savedCards);
 		qbdoo.changeTheme();
 		qbdoo.congratulations('off');
-
+		qbdoo.writeLevel();
 	},
 
 	cardClicks: function() {
-		qbdoo.cardEls = qbdoo.board.querySelectorAll("#board div:not([data-value='0'])");
-
-		var cards = qbdoo.cardEls.length;
-		for (var i = 0; i < cards; i++) {
-			qbdoo.cardEls[i].addEventListener("click", qbdoo.turnCard );
+		var i;
+		for (i = 0; i < qbdoo.cardCount; i++){
+			qbdoo.cards[i].addEventListener("click", qbdoo.turnCard );
 		}
 	},
 
 	eventHandlers: function(){
-		qbdoo.btn_pause.addEventListener('click', qbdoo.pauseGame);
+		qbdoo.btn_pause.addEventListener('click', qbdoo.pauseGameOrNewGame);
 		qbdoo.btn_mute.addEventListener('click', qbdoo.toggleMute);
 		qbdoo.themeChanger.addEventListener('change', qbdoo.changeTheme);
 		qbdoo.clearScores.addEventListener('click',qbdoo.eraseScores);
 	},
 
-	pauseToNewGame: function(){
-		qbdoo.btn_pause.removeEventListener('click', qbdoo.pauseGame);
-		qbdoo.btn_pause.addEventListener('click', qbdoo.startNewGame);
+	pauseGameOrNewGame: function(){
+		if (qbdoo.game.classList.contains('over')) {
+			qbdoo.startNewGame();
+		} else {
+			qbdoo.pauseGame();
+		}
 	},
 
 	startNewGame: function(){
@@ -129,32 +134,34 @@ var qbdoo = {
 
 	setLevel: function(level){
 		qbdoo.board.className = 'level' + level;
-		document.querySelector('#level output').innerHTML = level;
+		qbdoo.levelOutput.innerHTML = level;
 	},
 
 	levelUp: function() {
 		qbdoo.currentLevel++
-		if (qbdoo.currentLevel <= qbdoo.possibleLevels) {
-			// look and feel is completely determined by class of the board
-			document.getElementById('board').className = 'level' + qbdoo.currentLevel;
-		}
-
-		document.querySelector('#level output').innerHTML = qbdoo.currentLevel;
-
+		qbdoo.writeLevel();
 		// to increase the possible values of the front of the cards
 		if (qbdoo.currentLevel == 2 || qbdoo.currentLevel == 3) {
-			qbdoo.cards += 4;
+			qbdoo.cardCount += 4;
 		}
 		// if we've maxed out the levels, the game gets harder (shorter time) with level increases.
 		// at first it goes down by 5 seconds per level, and then down by 2 then 1 second per level after 
 		else if (qbdoo.currentLevel > qbdoo.possibleLevels) {
-			if(qbdoo.gameDuration > 60){
+			if(qbdoo.gameDuration > 60) {
 				qbdoo.gameDuration -= 5;
-			} else if (qbdoo.gameDuration > 30){
+			} else if (qbdoo.gameDuration > 30) {
 				qbdoo.gameDuration -= 2;
 			} else {
 				qbdoo.gameDuration -= 1;
 			}
+		}
+	},
+
+	writeLevel: function(){
+		qbdoo.levelOutput.innerHTML = qbdoo.currentLevel;
+		if (qbdoo.currentLevel <= qbdoo.possibleLevels) {
+			// look and feel is completely determined by class of the board
+			qbdoo.board.className = 'level' + qbdoo.currentLevel;
 		}
 	},
 
@@ -170,9 +177,8 @@ var qbdoo = {
 		}
 		//turns the card by changing the className
 		this.classList.add('flipped');
-		qbdoo.flipped = document.querySelectorAll('div.flipped');
 		// if this is the 2nd card currently flipped, check for matching
-		if (qbdoo.flipped.length == 2) {
+		if (qbdoo.currFlipped.length == 2) {
 			qbdoo.pauseFlipping = true;
 			setTimeout(function() {
 				qbdoo.handleMatching();
@@ -187,14 +193,15 @@ var qbdoo = {
 			qbdoo.hideCards();
 			//play sound
 			qbdoo.playSound(true);
-			//increase score
-			qbdoo.setAndShowScore(qbdoo.score += 2);
+			//increase score by # of cards * current level
+			qbdoo.setAndShowScore(qbdoo.score += 2 * qbdoo.currentLevel);
 
 		} else {
 			qbdoo.playSound(false);
 			//remove class whether or not matched
-			qbdoo.flipped[0].classList.remove('flipped');
-			qbdoo.flipped[1].classList.remove('flipped');
+			while(qbdoo.currFlipped.length){
+               qbdoo.currFlipped[0].classList.remove('flipped');
+           }
 		}
 		// once done, allow game to continue
 		qbdoo.pauseFlipping = false;
@@ -208,7 +215,7 @@ var qbdoo = {
 
 	// check if 2 cards match
 	matched: function() {
-		if (qbdoo.getValue(qbdoo.flipped[0]) == qbdoo.getValue(qbdoo.flipped[1])) {
+		if (qbdoo.getValue(qbdoo.currFlipped[0]) == qbdoo.getValue(qbdoo.currFlipped[1])) {
 			return true;
 		}
 		else {
@@ -256,14 +263,14 @@ var qbdoo = {
 
 	// nullify cards upon match
 	hideCards: function() {
-		qbdoo.flipped[0].classList.add('matched');
-		qbdoo.flipped[1].classList.add('matched');
+		qbdoo.currFlipped[0].classList.add('matched');
+		qbdoo.currFlipped[1].classList.add('matched');
 		setTimeout(function(){
-			var matched = document.querySelectorAll('div.matched'), i = 0;
-			for(; i < 2; i++){
-				matched[i].dataset['value'] = 0;
-				matched[i].classList.remove('matched');
-				matched[i].classList.remove('flipped');
+			var i;
+			for(i = qbdoo.currMatched.length; i > 0; i--){
+				qbdoo.currMatched[i-1].classList.remove('flipped');
+				qbdoo.currMatched[i-1].dataset['value'] = 0;
+				qbdoo.currMatched[i-1].classList.remove('matched');
 			}
 		}, 300);
 	},
@@ -272,11 +279,9 @@ var qbdoo = {
 	isLevelOver: function() {
 		// not over if any card has data value
 		if (qbdoo.board.querySelectorAll("#board div[data-value]:not([data-value='0'])").length > 2) {
-			//console.log(qbdoo.board.querySelectorAll("#board div[data-value]:not([data-value='0'])").length)
 			return false;
 		}
-		else {
-			// if no data-values, game is over
+		else { // if no data-values, game is over
 			return true;
 		}
 	},
@@ -292,7 +297,6 @@ var qbdoo = {
 
 		if (qbdoo.timeLeft) {
 			// Announce End of Level
-			//qbdoo.levelover.getElementsByTagName('output')[0].innerHTML = qbdoo.score;
 			qbdoo.levelover.style.display = 'block';
 			qbdoo.congratulations('on');
 			// restart new game leaving the score up for a few seconds
@@ -303,16 +307,16 @@ var qbdoo = {
 		}
 	},
 	gameLost: function(){
-			//kill unflipped cards
-			document.querySelector('.flipped').classList.remove('flipped');
-			// Announce End of Game: update score, show game over and remove timer
-			qbdoo.gameover.getElementsByTagName('output')[0].innerHTML = qbdoo.score;
-			qbdoo.game.classList.add('over');
-			// empty out timer
-			qbdoo.timerShell.innerHTML = "";
-			qbdoo.addHighScore();
-			//changes the pause link to new game link
-			qbdoo.pauseToNewGame();
+		//kill unflipped cards
+		while(qbdoo.currFlipped.length){
+			qbdoo.currFlipped[0].classList.remove('flipped');
+		}
+		// Announce End of Game: update score, show game over and remove timer
+		qbdoo.scoreoutput.innerHTML = qbdoo.score;
+		qbdoo.game.classList.add('over');
+		// empty out timer
+		qbdoo.timerShell.innerHTML = "";
+		qbdoo.addHighScore();
 	},
 	setAndShowScore: function(value){
 		qbdoo.scoreoutput.innerHTML = qbdoo.score = value;
@@ -341,7 +345,6 @@ var qbdoo = {
 	},
 
 	setTimer: function(frompaused) {
-		qbdoo.timerShell = document.querySelector("#pause output");
 		if(frompaused){
 			qbdoo.timerShell.innerHTML = qbdoo.timeLeft;
 		} else {
@@ -373,7 +376,7 @@ var qbdoo = {
 
 	randomize: function() {
 		// get a random number 
-		var num = Math.floor(Math.random() * (qbdoo.cards / 2) + 1);
+		var num = Math.floor(Math.random() * (qbdoo.cardCount / 2) + 1);
 		// make sure that random number isn't already used twice
 		if (qbdoo.cardarray.indexOf(num) < 0) {
 			qbdoo.cardarray.push(num);
@@ -388,23 +391,18 @@ var qbdoo = {
 	storeValues: function(newgame){
 		var currentState = {};
 		//capture values for play
-		// add theme to value set
 		currentState.currentTheme = qbdoo.currentTheme;
-		// add timeleft to value set
 		currentState.timeLeft = qbdoo.timeLeft;
-		// add score to value set
 		currentState.score = qbdoo.score;
-		// add number of cards displayed at current level
-		currentState.cards = qbdoo.cards;
-		// add audio state
+		currentState.cardCount = qbdoo.cardCount;
 		currentState.mute = qbdoo.mute;
-		// how many iterations
 		currentState.iterations = qbdoo.iterations;
 		// get all the cards values and positions
 		// use dataset to get value for all the cards.
   		if(newgame == 'newgame') { 
   			   currentState.currentLevel = qbdoo.currentLevel;
 			   currentState.score = 0;
+			   currentState.gameDuration = qbdoo.gameDuration;
                sessionStorage.setItem('defaultvalues', JSON.stringify(currentState));
                return;
        	} else {
@@ -413,7 +411,7 @@ var qbdoo = {
 	},
 	pauseGame: function(newgame) {
 		// if game is paused
-       var currentState = {}, i, currCards, cardinfo = [];
+       var currentState = {}, i, cardinfo = [];
        if(qbdoo.game.classList.contains('paused')){
             qbdoo.playGame();
             return false;
@@ -421,14 +419,8 @@ var qbdoo = {
         //pause 
        qbdoo.pauseOrPlayBoard('pause');
        currentState = qbdoo.storeValues();
-       currCards = document.querySelectorAll('#board > div');
-        // return if there are no cards
-       if(!currCards.length) {
-       		console.log('error');
-       		return;
-       	}
-       for (i = 0; i < qbdoo.cards; i++) {
-         	cardinfo.push(currCards[i].dataset);
+       for (i = 0; i < qbdoo.cardCount; i++) {
+         	cardinfo.push(qbdoo.cards[i].dataset);
        }
 		// add level to value set
 		currentState.currentLevel = qbdoo.currentLevel;
@@ -445,6 +437,7 @@ var qbdoo = {
 		 // get localStorage or sessionStorage depending on state
 		if(newgame == 'newgame'){
             currentState = JSON.parse(sessionStorage.getItem('defaultvalues'));
+            qbdoo.timeLeft = qbdoo.gameDuration = currentState.gameDuration;
         } else {
 			// get state via local storage
 			currentState = JSON.parse(localStorage.getItem('pausedgame'));
@@ -452,35 +445,25 @@ var qbdoo = {
 			if(qbdoo.game.classList.contains('paused')){
 				qbdoo.game.classList.remove('paused');
 			}
+			qbdoo.timeLeft = currentState.timeLeft;
 		}
 		qbdoo.reset('pausedgame');
-		// set theme to value set
+		// set all the values to be saved
 		qbdoo.currentTheme = currentState.currentTheme;
-		// add audio state
 		qbdoo.mute = currentState.mute;
-		// set level to value set
 		qbdoo.currentLevel = currentState.currentLevel;
-
-		// set timeleft to value set
-		qbdoo.timeLeft = currentState.timeLeft;
-
-		// set score to value set
 		qbdoo.score = currentState.score;
-		// set number of cards displayed at current level
-		qbdoo.cards = currentState.cards;
-		// how many iterations
+		qbdoo.cardCount = currentState.cardCount;
 		qbdoo.iterations = currentState.iterations;
-
 		// restart the game
 	 	qbdoo.setupGame(currentState.cardPositions);
+
+   
 		
 	},
 
-	renderMenu: function() {
-
-	},
+	// get saved state, alter the value, put back in session storage
 	alterAValue: function(item, value){
-		// get saved state, alter the value, put back in session storage
 		var currentState = JSON.parse(sessionStorage.getItem('defaultvalues'));
 		if(value) {
 			currentState[item] = value;
@@ -490,16 +473,17 @@ var qbdoo = {
 		sessionStorage.setItem('defaultvalues', JSON.stringify(currentState));
 		return value;
 	},
+
+	// sets all values to 0
 	clearAll: function() {
-		// sets all values to 0
-		for (var i = 1; i <= qbdoo.cards; i++) {
-			qbdoo.board.querySelector("div[data-position='" + i + "']").setAttribute("data-value", 0);
+		for (var i = 0; i < qbdoo.cardCount; i++) {
+			qbdoo.cards[i].dataset.value = 0;
 		}
 	},
 
+	//change the theme by changing the class.
+	// everything else is in the CSS file
 	changeTheme: function() {
-		//change the theme by changing the class.
-		// everything else is in the CSS file
 		qbdoo.currentTheme = qbdoo.themeChanger.value || qbdoo.currentTheme
 		qbdoo.game.setAttribute('class', qbdoo.currentTheme);
 		qbdoo.alterAValue('currentTheme', qbdoo.currentTheme);
@@ -524,11 +508,9 @@ var qbdoo = {
 		var scores = qbdoo.highScores.sort(function(a, b) {
 			if (a[0] > b[0]) {
 				return -1;
-			}
-			else if (a[0] == b[0]) {
+			} else if (a[0] == b[0]) {
 				return 0;
-			}
-			else {
+			} else {
 				return 1;
 			}
 		});
@@ -537,7 +519,6 @@ var qbdoo = {
 	},
 
 	saveHighScores: function(score, player) {
-		console.log()
 		if(qbdoo.storageType === 'local'){
 			localStorage.setItem("highScores", JSON.stringify(qbdoo.highScores));
 		} else {
@@ -587,23 +568,18 @@ var qbdoo = {
 
 	// put the high scores on the screen
 	renderHighScores: function(score, player) {
-		var classname = "";
-		var highlighted = false;
+		var classname, highlighted = false, text = '';
 		for (var i = 0; i < qbdoo.maxHighScores; i++) {
-			qbdoo.highscorelist[i].classList.remove('current');
 			if (i < qbdoo.highScores.length) {
-				qbdoo.highscorelist[i].innerHTML = qbdoo.highScores[i][1].toUpperCase() + ": <em>" + parseInt(qbdoo.highScores[i][0]) + "</em> ";
-				// if provided, highlight score from current game
-				if (typeof player !== "undefined" && typeof score !== "undefined") {
-					if (qbdoo.highScores[i][1] == player && qbdoo.highScores[i][0] == score) {
-						qbdoo.highscorelist[i].className = "current";
-					}
+				if (qbdoo.highScores[i][1] == player && qbdoo.highScores[i][0] == score) {
+					classname = ' class="current"';
+				} else {
+					classname = '';
 				}
-			}
-			else {
-				qbdoo.highscorelist[i].innerHTML = "";
+			 	text += "<li" + classname + ">" + qbdoo.highScores[i][1].toUpperCase() + ": <em>" + parseInt(qbdoo.highScores[i][0]) + "</em></li> ";
 			}
 		}
+		qbdoo.highscorelist.innerHTML = text;
 	},
 	eraseScores: function(){
 		if(qbdoo.storageType === 'local'){
@@ -615,6 +591,7 @@ var qbdoo = {
                   qbdoo.onError);
             });
 		}
+		qbdoo.highscorelist.innerHTML = '<li></li>';
 	},
 /* WEBSQL */
 	createTable: function() {
