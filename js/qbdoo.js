@@ -4,7 +4,7 @@ var qbdoo = {
 	//game settings
 	currentLevel: 1,
 	currentTheme: "numbers",
-	gameDuration: 90,
+	gameDuration: 120,
 	score: 0,
     matchedSound: 'assets/match.mp3',
     failedMatchSound: 'assets/notmatch.mp3',
@@ -14,7 +14,7 @@ var qbdoo = {
 	iterationsPerLevel: 1,
 	possibleLevels: 3,
 	maxHighScores: 5,
-	storageType: "WEBSQL",
+	storageType: (window.openDatabase)? "WEBSQL": 'local',
 	cards: document.querySelectorAll('div[data-position]'),
 	currFlipped: document.getElementsByClassName('flipped'),
 	currMatched: document.getElementsByClassName('matched'),
@@ -52,7 +52,7 @@ var qbdoo = {
 	},
 
 	setupGame: function(savedCards) {
-		var cardsValues, cards;
+		var cardsValues, cards, dbsize;
 		if(savedCards){ // if starting from pause
 			cardsValues = JSON.parse(savedCards); 
 			for(i = 0; i < qbdoo.cardCount; i++){
@@ -82,7 +82,8 @@ var qbdoo = {
 		if(qbdoo.storageType !== "local"){
 			if(!qbdoo.db){
 				if (window.openDatabase) {
-			    	qbdoo.db = openDatabase("highscoresDB", "1.0", "All the scores, good and bad", 200000); 
+					dbSize = 5 * 1024 * 1024; 
+			    	qbdoo.db = openDatabase("highscoresDB", "1.0", "scores", 200000); 
 			    }
 			}
 			qbdoo.loadHighScoresSQL();
@@ -141,7 +142,7 @@ var qbdoo = {
 		qbdoo.currentLevel++
 		qbdoo.writeLevel();
 		// to increase the possible values of the front of the cards
-		if (qbdoo.currentLevel == 2 || qbdoo.currentLevel == 3) {
+		if (qbdoo.currentLevel <= qbdoo.possibleLevels) {
 			qbdoo.cardCount += 4;
 		}
 		// if we've maxed out the levels, the game gets harder (shorter time) with level increases.
@@ -518,6 +519,15 @@ var qbdoo = {
 		qbdoo.highScores = scores.slice(0, qbdoo.maxHighScores);
 	},
 
+/* WEBSQL */
+	createTable: function() {
+		var i;
+        qbdoo.db.transaction(function(tx) {
+          tx.executeSql("CREATE TABLE highscoresTable (id REAL UNIQUE, name TEXT, score NUMBER, date DATE )", [],
+              function(tx) {console.log('highscore table created') },
+              qbdoo.onError);
+        });
+      },
 	saveHighScores: function(score, player) {
 		if(qbdoo.storageType === 'local'){
 			localStorage.setItem("highScores", JSON.stringify(qbdoo.highScores));
@@ -593,15 +603,7 @@ var qbdoo = {
 		}
 		qbdoo.highscorelist.innerHTML = '<li></li>';
 	},
-/* WEBSQL */
-	createTable: function() {
-		var i;
-        qbdoo.db.transaction(function(tx) {
-          tx.executeSql("CREATE TABLE highscoresTable (id REAL UNIQUE, name TEXT, score NUMBER, date DATE )", [],
-              function(tx) {console.log('highscore table created') },
-              qbdoo.onError);
-        });
-      },
+
 
     onError: function(tx, error){
         console.log('Error: ' + error.message);
