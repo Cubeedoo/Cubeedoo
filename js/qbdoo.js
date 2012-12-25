@@ -522,7 +522,7 @@ var qbdoo = {
 	},
 
 	webWorkers: function(){
-		var webWorker = new Worker('sort.js'); 
+		var webWorker = new Worker('js/sort.js'); 
 		webWorker.postMessage('some_message');
 	},
 
