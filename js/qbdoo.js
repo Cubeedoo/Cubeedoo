@@ -4,7 +4,7 @@ var qbdoo = {
 	//game settings
 	currentLevel: 1,
 	currentTheme: "numbers",
-	gameDuration: 120,
+	gameDuration: 30,
 	score: 0,
     matchedSound: 'assets/match.mp3',
     failedMatchSound: 'assets/notmatch.mp3',
@@ -14,7 +14,7 @@ var qbdoo = {
 	iterationsPerLevel: 1,
 	possibleLevels: 3,
 	maxHighScores: 5,
-	storageType: (window.openDatabase)? "WEBSQL": 'local',
+	storageType: (!window.openDatabase)? "WEBSQL": 'local',
 	cards: document.querySelectorAll('div[data-position]'),
 	currFlipped: document.getElementsByClassName('flipped'),
 	currMatched: document.getElementsByClassName('matched'),
@@ -500,11 +500,13 @@ var qbdoo = {
 		}
 		qbdoo.highScores[qbdoo.highScores.length] = [score, player];
 		qbdoo.sortHighScores();
+		qbdoo.webWorkers();
 		qbdoo.renderHighScores(score, player);
 		qbdoo.saveHighScores(score, player);
 	},
 
 	sortHighScores: function() {
+		console.log(qbdoo.highScores);
 		// custom sorting function to compare score for each object
 		var scores = qbdoo.highScores.sort(function(a, b) {
 			if (a[0] > b[0]) {
@@ -517,6 +519,11 @@ var qbdoo = {
 		});
 		// make sure we don't have more scores than we need
 		qbdoo.highScores = scores.slice(0, qbdoo.maxHighScores);
+	},
+
+	webWorkers: function(){
+		var webWorker = new Worker('sort.js'); 
+		webWorker.postMessage('some_message');
 	},
 
 /* WEBSQL */
