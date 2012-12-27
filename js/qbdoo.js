@@ -14,6 +14,7 @@ var qbdoo = {
 	iterationsPerLevel: 1,
 	possibleLevels: 3,
 	maxHighScores: 5,
+	webWorker: new Worker('js/sort.js'),
 	storageType: (!window.openDatabase)? "WEBSQL": 'local',
 	cards: document.querySelectorAll('div[data-position]'),
 	currFlipped: document.getElementsByClassName('flipped'),
@@ -522,7 +523,7 @@ var qbdoo = {
 	},
 
 	webWorkers: function(){
-		var webWorker = new Worker('js/sort.js'); 
+		//var webWorker = new Worker('js/sort.js'); 
 		webWorker.postMessage('some_message');
 		webWorker.onmessage(function(event){
 			console.dir(event);
