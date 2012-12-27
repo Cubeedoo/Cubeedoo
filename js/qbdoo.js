@@ -525,9 +525,9 @@ var qbdoo = {
 	webWorkers: function(){
 		//var webWorker = new Worker('js/sort.js'); 
 		qbdoo.webWorker.postMessage('some_message');
-		qbdoo.webWorker.onmessage(function(event){
+		qbdoo.webWorker.onmessage = function(event){
 			console.dir(event);
-		});
+		};
 	},
 
 /* WEBSQL */
