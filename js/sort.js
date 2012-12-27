@@ -3,7 +3,7 @@ self.onmessage=function(event){
 		//var stuff = event.data;
 		// and send it back to the main thread
 		//postMessage(stuff);
-		self.postMessage(event);
+		self.postMessage('event' + event);
 };
 function sortall(numbers){
 	var i=0;
