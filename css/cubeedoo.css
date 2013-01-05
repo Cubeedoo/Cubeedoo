@@ -141,9 +141,10 @@ article > footer p {
 	bottom: 0;
 	border-radius: 3px;
 	pointer-events: none;
+	-webkit-backface-visibility:hidden;
 }
 .back {border: 5px solid white;}
-.back:after, .face:after {}
+
 .back:after {
 	font-size: 2.5rem;
 	line-height: 100%;
@@ -159,7 +160,6 @@ article > footer p {
 		url('data:image/svg+xml;utf8,<svg width="40" height="40" xmlns="http://www.w3.org/2000/svg"><g><text xml:space="preserve" text-anchor="middle" font-family="serif" font-size="40" id="svg_1" y="30" x="20" stroke-width="0" stroke="rgb(119, 160, 215)" fill="rgb(119, 160, 215)">❀</text></g></svg>'), 
 		-webkit-linear-gradient(-15deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.025));
 	-webkit-transform: rotatey(0deg) translatez(0);
-	-webkit-backface-visibility:hidden;
 	
 }
  
@@ -168,20 +168,15 @@ article > footer p {
 	box-shadow: -1px 1px 1px rgba(0,0,0,0.25);
 }
 #board > div.matched {
-	-webkit-transform: rotatey(180deg) translatez(0);
-	-webkit-animation: fade 250ms forwards;	
+	-webkit-animation: fade 250ms both;	
 }
-#board > div.matched:nth-of-type(2) {
+#board > div.matched:nth-of-type(1) {
 	-webkit-animation-delay: 250ms;
-}
-#board > div.matched .back {
-	display: none; 
-	-webkit-transform: scale(0) !important;
 }
 
 @-webkit-keyframes fade {
-	0%   {-webkit-transform: scale(1) rotate(0deg) translatez(0);}
-	50%, 100% {-webkit-transform: scale(0) rotate(720deg) translatez(0);}	
+	0%   {-webkit-transform: scale(1.0) rotatey(180deg) rotate(0) translatez(0); }
+	100% {-webkit-transform: scale(0) rotatey(180deg) rotate(720deg) translatez(0); }	
 } 
 #board div[data-value="0"] {
 	visibility: hidden; 
@@ -305,28 +300,36 @@ footer div {
 
 
 /* colors */
-.colors .face { 
-	top: 5px; bottom: 5px;  
-	right: 5px; left: 5px;
-	border-radius: 5px;
+.colors .face:after { 
+	position: absolute;
+	top:  0; bottom: 0; 
+	left: 0; right: 0;
+	text-align: center;
 	background-image:
 	  -webkit-linear-gradient(-45deg, 
 	  	rgba(255,255,255,0.3), 
-	  	rgba(255,255,255,0));
+	  	rgba(255,255,255,0)); 
+	content: '';
+	border: 5px solid white;
+	border-radius: 5px;
+	box-shadow: 
+		inset 1px 1px 0 currentcolor,
+		inset -1px -1px 0 currentcolor;
+    color: rgb(119, 160, 215);
 }
-.colors div[data-value="0"] .face  { background-color:transparent;}
-.colors div[data-value="1"] .face  { background-color:#F00;}
-.colors div[data-value="2"] .face  { background-color:#090;}
-.colors div[data-value="3"] .face  { background-color:#FF0;}
-.colors div[data-value="4"] .face  { background-color:#F60;}
-.colors div[data-value="5"] .face  { background-color:#00F;}
-.colors div[data-value="6"] .face  { background-color:#909;}
-.colors div[data-value="7"] .face  { background-color:#F0F;}
-.colors div[data-value="8"] .face  { background-color:#633;}
-.colors div[data-value="9"] .face  { background-color:#000;}
-.colors div[data-value="10"] .face { background-color:#fff;}
-.colors div[data-value="11"] .face { background-color:#666}
-.colors div[data-value="12"] .face { background-color:#ccc;}
+.colors div[data-value="0"] .face:after  { background-color:transparent; }
+.colors div[data-value="1"] .face:after  { background-color:#F00;}
+.colors div[data-value="2"] .face:after  { background-color:#090;}
+.colors div[data-value="3"] .face:after  { background-color:#FF0;}
+.colors div[data-value="4"] .face:after  { background-color:#F60;}
+.colors div[data-value="5"] .face:after  { background-color:#00F;}
+.colors div[data-value="6"] .face:after  { background-color:#909;}
+.colors div[data-value="7"] .face:after  { background-color:#F0F;}
+.colors div[data-value="8"] .face:after  { background-color:#633;}
+.colors div[data-value="9"] .face:after  { background-color:#000;}
+.colors div[data-value="10"] .face:after { background-color:#fff;}
+.colors div[data-value="11"] .face:after { background-color:#666}
+.colors div[data-value="12"] .face:after { background-color:#ccc;}
 
 /* numbers  and shapes */
 .numbers .face:after,
@@ -350,7 +353,7 @@ footer div {
  .shapes .level3 .face:after {
 	line-height: 46px;
 }
-.numbers  .face {-webkit-transform: rotatey(180deg);}
+.face {-webkit-transform: rotatey(180deg);}
 .level1 div .face {line-height: 65px;}
 .level2 div .face {line-height: 55px;}
 .level3 div .face {line-height: 45px;}
