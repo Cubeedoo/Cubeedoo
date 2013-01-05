@@ -4,7 +4,7 @@ var qbdoo = {
 	//game settings
 	currentLevel: 1,
 	currentTheme: "numbers",
-	gameDuration: 30,
+	gameDuration: 60,
 	score: 0,
     matchedSound: 'assets/match.mp3',
     failedMatchSound: 'assets/notmatch.mp3',
@@ -14,7 +14,7 @@ var qbdoo = {
 	iterationsPerLevel: 1,
 	possibleLevels: 3,
 	maxHighScores: 5,
-	webWorker: new Worker('js/sort.js'),
+	//webWorker: new Worker('js/sort.js'),
 	storageType: (!window.openDatabase)? "WEBSQL": 'local',
 	cards: document.querySelectorAll('div[data-position]'),
 	currFlipped: document.getElementsByClassName('flipped'),
@@ -142,7 +142,7 @@ var qbdoo = {
 	levelUp: function() {
 		qbdoo.currentLevel++
 		qbdoo.writeLevel();
-		// to increase the possible values of the front of the cards
+		// to increase the possible values of the face of the cards
 		if (qbdoo.currentLevel <= qbdoo.possibleLevels) {
 			qbdoo.cardCount += 4;
 		}
@@ -501,13 +501,12 @@ var qbdoo = {
 		}
 		qbdoo.highScores[qbdoo.highScores.length] = [score, player];
 		qbdoo.sortHighScores();
-		qbdoo.webWorkers();
+		//qbdoo.webWorkers();
 		qbdoo.renderHighScores(score, player);
 		qbdoo.saveHighScores(score, player);
 	},
 
 	sortHighScores: function() {
-		console.log(qbdoo.highScores);
 		// custom sorting function to compare score for each object
 		var scores = qbdoo.highScores.sort(function(a, b) {
 			if (a[0] > b[0]) {
