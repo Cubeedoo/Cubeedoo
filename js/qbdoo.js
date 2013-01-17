@@ -4,7 +4,7 @@ var qbdoo = {
 	//game settings
 	currentLevel: 1,
 	currentTheme: "numbers",
-	gameDuration: 60,
+	gameDuration: 30,
 	score: 0,
     matchedSound: 'assets/match.mp3',
     failedMatchSound: 'assets/notmatch.mp3',
@@ -55,36 +55,36 @@ var qbdoo = {
 	setupGame: function(savedCards) {
 		var cardsValues, cards, dbsize;
 		if(savedCards){ // if starting from pause
-			cardsValues = JSON.parse(savedCards); 
+			cardsValues = JSON.parse(savedCards);
 			for(i = 0; i < qbdoo.cardCount; i++){
 				for (key in cardsValues[i]) {
 					qbdoo.cards[i].dataset[key] = cardsValues[i][key];
 				}
-			}		
+			}
 		} else { // not from pause
 			// go up a level after "iterationsPerLevel" number of iterations
 			if (qbdoo.iterations && (qbdoo.iterations % qbdoo.iterationsPerLevel == 0)) {
-				qbdoo.levelUp();	
+				qbdoo.levelUp();
 			}
 			// populate all the active blocks with data valuess
 			for (var i = 1; i <= qbdoo.cardCount; i++) {
 				  // get pairs of random numbers
 					var num = "";
-					while (!num) { 
-						num = qbdoo.randomize(); 
+					while (!num) {
+						num = qbdoo.randomize();
 					}
-				
+
 			// set the data-value for each card
 			qbdoo.board.querySelector("div[data-position='" + i + "']").setAttribute("data-value", num);
 		  }
 		  // add to iterations so that iterationsPerLevel will eventually cause a level increase.
-			qbdoo.iterations++; 
+			qbdoo.iterations++;
 		}
 		if(qbdoo.storageType !== "local"){
 			if(!qbdoo.db){
 				if (window.openDatabase) {
-					dbSize = 5 * 1024 * 1024; 
-			    	qbdoo.db = openDatabase("highscoresDB", "1.0", "scores", 200000); 
+					dbSize = 5 * 1024 * 1024;
+			    	qbdoo.db = openDatabase("highscoresDB", "1.0", "scores", 200000);
 			    }
 			}
 			qbdoo.loadHighScoresSQL();
@@ -147,7 +147,7 @@ var qbdoo = {
 			qbdoo.cardCount += 4;
 		}
 		// if we've maxed out the levels, the game gets harder (shorter time) with level increases.
-		// at first it goes down by 5 seconds per level, and then down by 2 then 1 second per level after 
+		// at first it goes down by 5 seconds per level, and then down by 2 then 1 second per level after
 		else if (qbdoo.currentLevel > qbdoo.possibleLevels) {
 			if(qbdoo.gameDuration > 60) {
 				qbdoo.gameDuration -= 5;
@@ -277,7 +277,7 @@ var qbdoo = {
 		}, 300);
 	},
 
-	// check level status 
+	// check level status
 	isLevelOver: function() {
 		// not over if any card has data value
 		if (qbdoo.board.querySelectorAll("#board div[data-value]:not([data-value='0'])").length > 2) {
@@ -341,8 +341,8 @@ var qbdoo = {
 			qbdoo.interval = undefined;
 		}
 		else if (state == "play") {
-			qbdoo.game.classList.remove('paused');	
-			qbdoo.timer();		
+			qbdoo.game.classList.remove('paused');
+			qbdoo.timer();
 		}
 	},
 
@@ -371,13 +371,13 @@ var qbdoo = {
 				qbdoo.timerPause = true;
 				qbdoo.pauseOrPlayBoard('pause');
 				qbdoo.clearAll();
-				qbdoo.endLevel();	
+				qbdoo.endLevel();
 			}
 		}
 	},
 
 	randomize: function() {
-		// get a random number 
+		// get a random number
 		var num = Math.floor(Math.random() * (qbdoo.cardCount / 2) + 1);
 		// make sure that random number isn't already used twice
 		if (qbdoo.cardarray.indexOf(num) < 0) {
@@ -401,7 +401,7 @@ var qbdoo = {
 		currentState.iterations = qbdoo.iterations;
 		// get all the cards values and positions
 		// use dataset to get value for all the cards.
-  		if(newgame == 'newgame') { 
+  		if(newgame == 'newgame') {
   			   currentState.currentLevel = qbdoo.currentLevel;
 			   currentState.score = 0;
 			   currentState.gameDuration = qbdoo.gameDuration;
@@ -418,7 +418,7 @@ var qbdoo = {
             qbdoo.playGame();
             return false;
        }
-        //pause 
+        //pause
        qbdoo.pauseOrPlayBoard('pause');
        currentState = qbdoo.storeValues();
        for (i = 0; i < qbdoo.cardCount; i++) {
@@ -430,7 +430,7 @@ var qbdoo = {
 		// add to local storage
 		localStorage.setItem('pausedgame', JSON.stringify(currentState));
 		//clear the board
-		qbdoo.clearAll();	
+		qbdoo.clearAll();
 		// return
 	},
 
@@ -460,8 +460,8 @@ var qbdoo = {
 		// restart the game
 	 	qbdoo.setupGame(currentState.cardPositions);
 
-   
-		
+
+
 	},
 
 	// get saved state, alter the value, put back in session storage
@@ -522,7 +522,7 @@ var qbdoo = {
 	},
 
 	webWorkers: function(){
-		//var webWorker = new Worker('js/sort.js'); 
+		//var webWorker = new Worker('js/sort.js');
 		qbdoo.webWorker.postMessage('some_message');
 		qbdoo.webWorker.onmessage = function(event){
 			console.dir(event);
@@ -542,10 +542,10 @@ var qbdoo = {
 		if(qbdoo.storageType === 'local'){
 			localStorage.setItem("highScores", JSON.stringify(qbdoo.highScores));
 		} else {
-			//var db = openDatabase("highscoresDB", "1.0", "All the scores, good and bad", 200000); 
+			//var db = openDatabase("highscoresDB", "1.0", "All the scores, good and bad", 200000);
                 qbdoo.db.transaction(function(tx) {
                   tx.executeSql("INSERT INTO highscoresTable (score, name, date) VALUES (?, ?, ?)", [score, player, new Date()],
-                      onSuccess, 
+                      onSuccess,
                       qbdoo.onError);
                 });
              function onSuccess(tx,results){
@@ -567,7 +567,7 @@ var qbdoo = {
     loadHighScoresSQL: function(){
 		var i;
 	    qbdoo.db.transaction(function(tx) {
-         	tx.executeSql("SELECT score, name, date FROM highscoresTable ORDER BY score DESC", 
+         	tx.executeSql("SELECT score, name, date FROM highscoresTable ORDER BY score DESC",
          		[], function(tx, result) {
 
 	           for (var i = 0, item = null; i < result.rows.length; i++) {
@@ -607,7 +607,7 @@ var qbdoo = {
 		} else {
             qbdoo.db.transaction(function(tx) {
               tx.executeSql("DROP TABLE highscoresTable", [],
-                  qbdoo.createTable, 
+                  qbdoo.createTable,
                   qbdoo.onError);
             });
 		}
