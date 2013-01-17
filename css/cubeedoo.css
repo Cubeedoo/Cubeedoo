@@ -162,21 +162,29 @@ article > footer p {
 	-webkit-transform: rotatey(0deg) translatez(0);
 	
 }
- 
+.face {
+	-webkit-transform: rotatey(180deg);
+}
 #board > div.flipped {
 	-webkit-transform: rotatey(180deg) translatez(0);
 	box-shadow: -1px 1px 1px rgba(0,0,0,0.25);
 }
 #board > div.matched {
-	-webkit-animation: fade 250ms both;	
+	-webkit-animation: fade 250ms both;
+	animation: fade 250ms both;	
 }
 #board > div.matched:nth-of-type(1) {
 	-webkit-animation-delay: 250ms;
+	animation-delay: 250ms;
 }
 
 @-webkit-keyframes fade {
 	0%   {-webkit-transform: scale(1.0) rotatey(180deg) rotate(0) translatez(0); }
 	100% {-webkit-transform: scale(0) rotatey(180deg) rotate(720deg) translatez(0); }	
+}
+@keyframes fade {
+	0%   {transform: scale(1.0) rotatey(180deg) rotate(0) translatez(0); }
+	100% {transform: scale(0) rotatey(180deg) rotate(720deg) translatez(0); }	
 } 
 #board div[data-value="0"] {
 	visibility: hidden; 
@@ -291,8 +299,14 @@ footer div {
 #highscores li.current { 
 	-webkit-animation: 
 		winner 500ms linear 8 alternate;
+	animation: 
+		winner 500ms linear 8 alternate;
 }
 @-webkit-keyframes winner{
+	0% {background-color: hsla(74, 64%, 59%,1);}
+	100%{background-color: hsla(74, 64%, 59%,0)}
+}
+@keyframes winner{
 	0% {background-color: hsla(74, 64%, 59%,1);}
 	100%{background-color: hsla(74, 64%, 59%,0)}
 }
@@ -353,7 +367,7 @@ footer div {
  .shapes .level3 .face:after {
 	line-height: 46px;
 }
-.face {-webkit-transform: rotatey(180deg);}
+
 .level1 div .face {line-height: 65px;}
 .level2 div .face {line-height: 55px;}
 .level3 div .face {line-height: 45px;}
