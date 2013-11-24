@@ -4,11 +4,11 @@ var qbdoo = {
 	//game settings
 	currentLevel: 1,
 	currentTheme: "numbers",
-	gameDuration: 30,
+	gameDuration: 90,
 	score: 0,
     matchedSound: 'assets/match.mp3',
     failedMatchSound: 'assets/notmatch.mp3',
-    mute: true,
+    mute: false,
 	cardCount: 16,
 	iterations: 0,
 	iterationsPerLevel: 1,
@@ -53,7 +53,7 @@ var qbdoo = {
 	},
 
 	setupGame: function(savedCards) {
-		var cardsValues, cards, dbsize;
+		var cardsValues, cards, dbsize, i;
 		if(savedCards){ // if starting from pause
 			cardsValues = JSON.parse(savedCards);
 			for(i = 0; i < qbdoo.cardCount; i++){
@@ -113,10 +113,21 @@ var qbdoo = {
 	},
 
 	eventHandlers: function(){
-		qbdoo.btn_pause.addEventListener('click', qbdoo.pauseGameOrNewGame);
-		qbdoo.btn_mute.addEventListener('click', qbdoo.toggleMute);
+ if('ontouchstart' in window ||
+    'createTouch' in document ||
+		(window.DocumentTouch && document instanceof DocumentTouch)) {
+				qbdoo.btn_pause.addEventListener('touchend', qbdoo.pauseGameOrNewGame);
+				qbdoo.btn_mute.addEventListener('touchend', qbdoo.toggleMute);
+				qbdoo.clearScores.addEventListener('touchend',qbdoo.eraseScores);
+		} else {
+				qbdoo.btn_pause.addEventListener('click', qbdoo.pauseGameOrNewGame);
+				qbdoo.btn_mute.addEventListener('click', qbdoo.toggleMute);
+				qbdoo.clearScores.addEventListener('click',qbdoo.eraseScores);
+		}
+
 		qbdoo.themeChanger.addEventListener('change', qbdoo.changeTheme);
-		qbdoo.clearScores.addEventListener('click',qbdoo.eraseScores);
+
+		document.addEventListener('touchcancel', qbdoo.pauseGameOrNewGame);
 	},
 
 	pauseGameOrNewGame: function(){
