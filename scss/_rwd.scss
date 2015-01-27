@@ -1,0 +1,23 @@
+
+/* MEDIA QUERIES:
+   if user is on a large screen, make the app smaller and show page header and footer.
+   if user is on small mobile device, show only the game, in full screen
+*/
+@media only screen and (min-width: 500px) {
+  #game {
+  width:320px;
+  height:440px;
+  margin:auto;
+  margin-top:50px;
+  border-radius: 3px;
+  border: 1px solid #999;
+  }
+}
+@media only screen and (max-width: 500px) {
+  article > header, article > footer {
+    display:none;
+  }
+  section, body, #game {
+    margin:0;
+  }
+}

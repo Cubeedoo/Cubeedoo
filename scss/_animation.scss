@@ -1,0 +1,24 @@
+@-webkit-keyframes winner {
+  0%    { background-color: hsla(74, 64%, 59%,1);}
+  100%  { background-color: hsla(74, 64%, 59%,0);}
+}
+@keyframes winner {
+  0%    { background-color: hsla(74, 64%, 59%,1);}
+  100%  { background-color: hsla(74, 64%, 59%,0);}
+}
+
+
+@-webkit-keyframes fade {
+  0%   {-webkit-transform: scale(1.0) rotatey(180deg) rotate(0) translatez(0); }
+  100% {-webkit-transform: scale(0) rotatey(180deg) rotate(720deg) translatez(0); }
+}
+@keyframes fade {
+  0%   {
+    -webkit-transform: scale(1.0) rotatey(180deg) rotate(0) translatez(0);
+    transform: scale(1.0) rotatey(180deg) rotate(0) translatez(0);
+  }
+  100% {
+    -webkit-transform: scale(0) rotatey(180deg) rotate(720deg) translatez(0);
+    transform: scale(0) rotatey(180deg) rotate(720deg) translatez(0);
+  }
+}

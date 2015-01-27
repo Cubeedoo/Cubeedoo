@@ -1,0 +1,28 @@
+article > footer,
+article > footer ul {
+  text-align: center;
+  margin: auto;
+  width:100%;
+}
+article > footer li {
+  float: none;
+  display: inline-block;
+}
+article > footer p {
+  clear: both;
+}
+
+footer {
+  clear: both;
+  padding: 5px;
+  height: 2em;
+}
+footer div {
+  text-align: center;
+  width: 33%;
+  height: 1.9em;
+  line-height: 1.8em;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

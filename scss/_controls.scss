@@ -1,0 +1,56 @@
+.control {
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.5);
+  background-image:
+    -webkit-linear-gradient(-15deg,
+      rgba(0, 0, 0, 0),
+      rgba(0, 0, 0, 0.025));
+  background-image:
+    linear-gradient(-15deg,
+      rgba(0, 0, 0, 0),
+      rgba(0, 0, 0, 0.025));
+  text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.5);
+  border-radius: 5px;
+}
+
+
+.tools{float:right;}
+.tools span {
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  position: relative;
+  width: 60px;
+  height: 28px;
+}
+.menu{float:left}
+.level {float: left;}
+
+/* THE BUTTONS */
+
+
+#mute {
+  width: 30px;
+  text-indent: 30px;
+  background-image:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><polygon points='39,13 22,28 6,28 6,47 22,48 39,63 39,14' style='stroke:#111111;stroke-width:5;stroke-linejoin:round;fill:#111111;' /><path d='M 48,50 69,26'  style='fill:none;stroke:#f00;stroke-width:5;stroke-linecap:round' /><path  d='M 69,50 48,26' style='fill:none;stroke:#f00;stroke-width:5;stroke-linecap:round' /></svg>");
+  background-size: 30px 30px;
+  background-position: 5px 2px;
+  background-repeat: no-repeat;
+  }
+#mute.on {
+  background-image:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><polygon points='39,13 22,28 6,28 6,47 22,48 39,63 39,14' style='stroke:#111111;stroke-width:5;stroke-linejoin:round;fill:#111111;' /></svg>");
+}
+#pause:before {
+  content:'❙❙';
+  letter-spacing: 3px;
+  padding-right:3px;
+}
+.paused #pause:before {
+  content:'▶';
+  padding-right:0;
+}
+.over #pause:before{
+  content: 'NEW';
+}

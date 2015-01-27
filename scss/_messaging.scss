@@ -1,0 +1,32 @@
+/* MESSAGING */
+
+.messages [id] { display: none;}
+.messages .visible[id],
+.over #gameover { display: inherit;}
+#congrats.visible,
+.over #gameover {
+  position: absolute;
+  top: 60px;
+  width: 100%;
+  text-align: center;
+}
+#gameover span {
+  display: block;
+  font-size: 2rem;
+  padding-bottom: 0.5rem;
+}
+
+/* ----------------
+  Winner's Circle
+   ---------------- */
+
+
+#highscorelist { max-width: 300px; }
+#highscorelist li { float: none; }
+#highscores li.current {
+  -webkit-animation:
+    winner 500ms linear 8 alternate;
+  animation:
+    winner 500ms linear 8 alternate;
+}
+

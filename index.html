@@ -1,5 +1,5 @@
-<!doctype html public "nuisance">
-<html lang="en"><!-- manifest="cubeedoo.manifest"-->
+<!doctype html>
+<html lang="en-US">
 <head>
 	<meta charset="utf-8"/>
 	<title>CuBeeDoo</title>
@@ -8,20 +8,15 @@
 	<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
 
 	<link rel="shortcut icon" href="/icon.png"/>
-	<link rel="apple-touch-icon" href="/appleicon.png"/> 
+	<link rel="apple-touch-icon" href="/appleicon.png"/>
 	<link rel="apple-touch-startup-image" href="startup.png"/>
-	<link rel="stylesheet" href="css/cubeedoo.css"/>
-    <link rel="apple-touch-icon" href="touch-icon-iphone.png" />
+	<link rel="stylesheet" href="css/index.css"/>
+  <link rel="apple-touch-icon" href="touch-icon-iphone.png" />
 	<link rel="apple-touch-icon" sizes="72x72" href="touch-icon-ipad.png" />
-	<link rel="apple-touch-icon" sizes="114x114" href="touch-icon-iphone4.png" /> 
-<!-- temp css 
-<style>
-#highscorelist { max-width: 300px; }
-#highscorelist li { float: none; }
-#highscores li.current { background: #ff0; }
-</style>-->
+	<link rel="apple-touch-icon" sizes="114x114" href="touch-icon-iphone4.png" />
 
-</head> 
+
+</head>
 <body>
 	<article>
 		<header>
@@ -29,7 +24,7 @@
 				<h1>CuBeeDoo</h1>
 				<h2>The Mobile Memory Matching Game</h2>
 			</hgroup>
-		</header>  
+		</header>
 		<section id="game" class="colors">
 			<footer>
 				<div class="control menu" id="menu">Menu</div>
@@ -38,7 +33,7 @@
 					<span class="control" id="pause"> <output id="seconds">120</output></span>
 				</div>
 				<div class="level" id="level">Level: <output></output></div>
-			</footer>    
+			</footer>
 
 			<div id="board" class="level1">
 				<div data-value="0" data-position="1">
@@ -150,7 +145,7 @@
 				<h1 id="gameover"><span>Game Over</span> Score: <output></output></h1>
 			</div>
 		</section>
-		
+
 
 
 		<section id="highscores">
@@ -161,15 +156,15 @@
 		</section>
 
 		<footer>
-			<ul>
+			<!--<ul>
 				<li><a href="about/estelle.html">About Estelle</a></li>
 				<li><a href="about/david.html">About David</a></li>
 				<li><a href="about/dave.html">About Dave</a></li>
 				<li><a href="about/justin.html">About Justin</a></li>
-			</ul>
+			</ul>-->
             <ul>
-					<li id="timer">  
-						
+					<li id="timer">
+
 					</li>
 					<li id="score">Score: <output>0</output></li>
 				</ul>
@@ -192,7 +187,7 @@
 	<audio id="matchsound" preload src="assets/match.mp3"></audio>
 	<audio id="nonmatchsound" preload src="assets/notmatch.mp3"></audio>
 	<audio id="gameover" preload src="media/gameover.mp3"></audio>
-	<script src="js/qbdoo.js"></script> 
+	<script src="js/qbdoo.js"></script>
 </body>
 </html>
 

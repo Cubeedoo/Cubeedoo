@@ -1,0 +1,15 @@
+@import "reset";
+@import "body";
+@import "header";
+@import "footer";
+@import "game";
+@import "controls";
+@import "messaging";
+@import "rwd";
+@import "cards";
+@import "animation";
+@import "themes";
+
+#highscorelist { max-width: 300px; }
+#highscorelist li { float: none; }
+#highscores li.current { background: #ff0; }

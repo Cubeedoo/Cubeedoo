@@ -6,9 +6,9 @@ var qbdoo = {
 	currentTheme: "numbers",
 	gameDuration: 90,
 	score: 0,
-    matchedSound: 'assets/match.mp3',
-    failedMatchSound: 'assets/notmatch.mp3',
-    mute: false,
+  matchedSound: 'assets/match.mp3',
+  failedMatchSound: 'assets/notmatch.mp3',
+  mute: false,
 	cardCount: 16,
 	iterations: 0,
 	iterationsPerLevel: 1,
@@ -306,7 +306,8 @@ var qbdoo = {
 		qbdoo.pauseOrPlayBoard('pause');
 
 		// Add to score
-		qbdoo.scoreoutput.innerHTML = qbdoo.score += (qbdoo.timeLeft * qbdoo.currentLevel);
+		qbdoo.score += (qbdoo.timeLeft * qbdoo.currentLevel);
+		qbdoo.scoreoutput.innerHTML = qbdoo.score;
 
 		if (qbdoo.timeLeft) {
 			// Announce End of Level

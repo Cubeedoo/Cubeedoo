@@ -1,0 +1,129 @@
+
+
+/* colors */
+.colors .face:after {
+  position: absolute;
+  top:  0; bottom: 0;
+  left: 0; right: 0;
+  text-align: center;
+  background-image:
+    -webkit-linear-gradient(-45deg,
+      rgba(255,255,255,0.3),
+      rgba(255,255,255,0));
+  background-image:
+    linear-gradient(-45deg,
+      rgba(255,255,255,0.3),
+      rgba(255,255,255,0));
+  content: '';
+  border: 5px solid white;
+  border-radius: 5px;
+  box-shadow:
+    inset 1px 1px 0 currentcolor,
+    inset -1px -1px 0 currentcolor;
+    color: rgb(119, 160, 215);
+}
+.colors div[data-value="0"] .face:after  { background-color:transparent; }
+.colors div[data-value="1"] .face:after  { background-color:#F00;}
+.colors div[data-value="2"] .face:after  { background-color:#090;}
+.colors div[data-value="3"] .face:after  { background-color:#FF0;}
+.colors div[data-value="4"] .face:after  { background-color:#F60;}
+.colors div[data-value="5"] .face:after  { background-color:#00F;}
+.colors div[data-value="6"] .face:after  { background-color:#909;}
+.colors div[data-value="7"] .face:after  { background-color:#F0F;}
+.colors div[data-value="8"] .face:after  { background-color:#633;}
+.colors div[data-value="9"] .face:after  { background-color:#000;}
+.colors div[data-value="10"] .face:after { background-color:#fff;}
+.colors div[data-value="11"] .face:after { background-color:#666}
+.colors div[data-value="12"] .face:after { background-color:#ccc;}
+
+/* numbers  and shapes */
+.numbers .face:after,
+.shapes .face:after {
+  position: absolute;
+  top:  5px; bottom: 5px;
+  left: 5px; right: 5px;
+  text-align: center;
+  font-size: 30px;
+  font-family: Verdana, Geneva, sans-serif;
+  line-height: 80px;
+  font-weight: bold;
+  color: #bada55;
+  border: 1px solid rgb(119, 160, 215);
+}
+.numbers .level2 .face:after,
+ .shapes .level2 .face:after {
+  line-height: 65px;
+}
+.numbers .level3 .face:after,
+ .shapes .level3 .face:after {
+  line-height: 46px;
+}
+
+.level1 div .face {line-height: 65px;}
+.level2 div .face {line-height: 55px;}
+.level3 div .face {line-height: 45px;}
+.numbers div[data-value="0"] div{ content:''; display: none;}
+.numbers div[data-value="1"] .face:after{ content:'1'}
+.numbers div[data-value="2"] .face:after{ content:'2'}
+.numbers div[data-value="3"] .face:after{ content:'3'}
+.numbers div[data-value="4"] .face:after{ content:'4'}
+.numbers div[data-value="5"] .face:after{ content:'5'}
+.numbers div[data-value="6"] .face:after{ content:'6'}
+.numbers div[data-value="7"] .face:after{ content:'7'}
+.numbers div[data-value="8"] .face:after{ content:'8'}
+.numbers div[data-value="9"] .face:after{ content:'9'}
+.numbers div[data-value="10"] .face:after{ content:'10'}
+.numbers div[data-value="11"] .face:after{ content:'11'}
+.numbers div[data-value="12"] .face:after{ content:'12'}
+
+
+.shapes  .face {
+  -webkit-transform: rotatey(180deg);
+  transform: rotatey(180deg);
+  background-color: #fff;
+}
+.shapes .face:after {font-size: 40px; line-height:70px;}
+.shapes div[data-value="0"] div{ content:''; display: none;}
+.shapes div[data-value="1"] .face:after{ content:'★';}
+.shapes div[data-value="2"] .face:after{ content:'⚫';}
+.shapes div[data-value="3"] .face:after{ content:'⬣';}
+.shapes div[data-value="4"] .face:after{ content:'◼';}
+.shapes div[data-value="5"] .face:after{ content:'⬆';}
+.shapes div[data-value="6"] .face:after{ content:'►';}
+.shapes div[data-value="7"] .face:after{ content:'♦';}
+.shapes div[data-value="8"] .face:after{ content:'♥';}
+.shapes div[data-value="9"] .face:after{ content:'♣';font-size: 50px;}
+.shapes div[data-value="10"] .face:after{ content:'♠';font-size: 50px;}
+.shapes div[data-value="11"] .face:after{ content:'☻'}
+.shapes div[data-value="12"] .face:after{ content:'⬇';}
+
+
+.shapes2  .face {
+  -webkit-transform: rotatey(180deg);
+  transform: rotatey(180deg);
+  background-image: url(../assets/shapes.svg);
+  background-size: 300px 300px;
+}
+.level2 .shapes2 .face {background-size: 290px 285px;}
+.shapes2 div[data-value="0"] div{display: none;}
+.shapes2 div[data-value="1"] .face{ background-position: 0 10px;}
+.shapes2 div[data-value="2"] .face{ background-position: -75px -65px;}
+.shapes2 div[data-value="3"] .face{ background-position: -150px -140px;}
+.shapes2 div[data-value="4"] .face{ background-position: -225px -215px;}
+.shapes2 div[data-value="5"] .face{ background-position: 0 -65px;}
+.shapes2 div[data-value="6"] .face{ background-position: -75px -140px;}
+.shapes2 div[data-value="7"] .face{ background-position: -150px -215px;}
+.shapes2 div[data-value="8"] .face{ background-position: -225px 10px;}
+.shapes2 div[data-value="9"] .face{ background-position: 0 -150px;}
+.shapes2 div[data-value="10"] .face{ background-position: -75px -225px;}
+.shapes2 div[data-value="11"] .face{ background-position: -150px 0;}
+.shapes2 div[data-value="12"] .face{ background-position: -225px -75px;}
+
+
+#board div[data-value="0"],
+#board div[data-value="0"]:after,
+#board div[data-value="0"]:before{
+  visibility: hidden;
+  background: transparent;
+}
+

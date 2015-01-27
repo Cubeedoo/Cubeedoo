@@ -1,0 +1,15 @@
+@charset "UTF-8";
+
+/* RESET */
+dy, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form, fieldset, legend, input, textarea, p, blockquote, th, td {margin:0;padding:0;color: hsl(205, 50%, 13%); -moz-box-sizing: border-box;-webkit-box-sizing: border-box;box-sizing: border-box;}
+li {list-style-type:none;float:left;margin-right: 5px;}
+article,aside,details,figcaption,figure,footer,header,hgroup,nav,section {display:block;}
+html{cursor:default;font-size:100%;overflow-y:scroll;-webkit-tap-highlight-color:transparent;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;}
+body,form,input,button,select,textarea{font-size:100%;margin:0;}
+a,a:active,a:hover{outline:none;color: hsl(205, 50%, 23%);}
+a:focus{outline:thin dotted;}
+abbr[title]{border-bottom:1px dotted;}
+img{border:0;-ms-interpolation-mode:bicubic;}
+button,input,select,textarea{-webkit-appearance:none;border-radius:0;vertical-align:baseline;}
+button,input{line-height:normal;}
+button,input[type="button"],input[type="reset"],input[type="submit"]{overflow:visible;}

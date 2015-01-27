@@ -1,0 +1,99 @@
+/* THE CARDS */
+
+.back, .face,
+.back:after, .face:after {
+  position: absolute;
+  content: "";
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 3px;
+  pointer-events: none;
+}
+.back {border: 5px solid white;}
+
+
+
+
+
+#board > div.flipped {
+  -webkit-transform: rotatey(180deg) translatez(0);
+  transform: rotatey(180deg) translatez(0);
+  box-shadow: -1px 1px 1px rgba(0,0,0,0.25);
+}
+#board > div.matched {
+  -webkit-animation: fade 250ms both;
+  animation: fade 250ms both;
+}
+#board > div.matched:nth-of-type(1) {
+  -webkit-animation-delay: 250ms;
+  animation-delay: 250ms;
+}
+
+#board div[data-value="0"] {
+  visibility: hidden;
+  -webkit-transition-duration:0; /* overwrites the transition duration for flipping */
+  transition-duration:0;
+}
+
+
+div[data-value] {
+  position: absolute;
+  -webkit-perspective: 600px;
+  perspective: 600px;
+}
+div[data-value] {
+  -webkit-transition: 1s ease;
+  transition: 1s ease;
+}
+.face {
+-webkit-transform: rotateX(0deg) rotateY(0deg);
+-webkit-transform-style: preserve-3d;
+-webkit-backface-visibility: hidden;
+transform: rotateX(0deg) rotateY(0deg);
+transform-style: preserve-3d;
+backface-visibility: hidden;
+
+}
+.flipped .face {
+  z-index: 1001;
+  -webkit-transform: rotateY(0);
+  transform: rotateY(0);
+}
+.back {
+  -webkit-transform: rotateY(-180deg);
+  -webkit-transform-style: preserve-3d;
+  -webkit-backface-visibility: hidden;
+  transform: rotateY(-180deg);
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  transition: all .4s ease-in-out;
+}
+.flipped .back {
+  z-index: 1000;
+  -webkit-transform: rotateY(0);
+  transform: rotateY(0);
+}
+
+.back:after {
+  font-size: 2.5rem;
+  line-height: 100%;
+  background:
+    50% 50% no-repeat,
+    0 0 no-repeat #fff;
+  font-style: normal;
+  box-shadow: inset 1px 1px 0 currentcolor,
+  inset -1px -1px 0 currentcolor,
+  1px 1px 1px rgba(0,0,0,0.1);
+    color: rgb(119, 160, 215);
+
+  background-image:
+  linear-gradient(-15deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.025));
+  transform: rotatey(0deg) translatez(0);
+  background-image:
+    url('data:image/svg+xml;utf8,<svg width="40" height="40" xmlns="http://www.w3.org/2000/svg"><g><text xml:space="preserve" text-anchor="middle" font-family="serif" font-size="40" id="svg_1" y="30" x="20" stroke-width="0" stroke="rgb(119, 160, 215)" fill="rgb(119, 160, 215)">❀</text></g></svg>');
+  -webkit-transform: rotatey(0deg) translatez(0);
+
+}
+
